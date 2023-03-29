@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="16dp"
+        android:stretchColumns="3">
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/site" />
+            <EditText
+                android:id="@+id/site"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/contents" />
+            <EditText
+                android:id="@+id/contents"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/feature_nums" />
+            <EditText
+                android:id="@+id/feature_nums"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/east" />
+            <EditText
+                android:id="@+id/east"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/north" />
+            <EditText
+                android:id="@+id/north"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/level" />
+            <EditText
+                android:id="@+id/level"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/depth" />
+            <EditText
+                android:id="@+id/depth"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/mbd" />
+            <EditText
+                android:id="@+id/mbd"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/date" />
+            <EditText
+                android:id="@+id/date"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/excavator" />
+            <EditText
+                android:id="@+id/excavator"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/comments" />
+            <EditText
+                android:id="@+id/comments"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_span="3"
+                android:inputType="text"
+                tools:text="Server Host" />
+        </TableRow>
+        <TableRow
+            android:gravity="center">
+            <Button
+                android:text="@string/submit"
+                android:id="@+id/submit"
+                />
+        </TableRow>
+        <TableRow>
+            <ImageView
+                android:id="@+id/qrImage"
+                android:layout_height="100dp"
+                android:layout_width="100dp"
+                />
+        </TableRow>
+
+    </TableLayout>
+
+</ScrollView>
