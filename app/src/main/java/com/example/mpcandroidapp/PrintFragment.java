@@ -23,7 +23,9 @@ import org.json.JSONObject;
  */
 public class PrintFragment extends Fragment {
 
-    String displaySite;
+
+    String displaySite, displayContents, displayFeatureNums, displayEasting, displayNorthing,
+            displayLevel, displayDepth, displayMBD, displayDate, displayExcavator, displayComments;
 
     Bitmap qrCode;
 
@@ -52,13 +54,46 @@ public class PrintFragment extends Fragment {
             try {
                 qrImage = view.findViewById(R.id.qrImage);
                 TextView siteView = view.findViewById(R.id.displaySite);
-                JSONObject jsonObject = new JSONObject(bundle.getString("jsonObject"));
-                displaySite = jsonObject.getString("site");
-                qrCode = bundle.getParcelable("bitmap");
+                TextView contentView = view.findViewById(R.id.displayContent);
+                TextView featureNumView = view.findViewById(R.id.displayFeatureNums);
+                TextView eastView = view.findViewById(R.id.displayEast);
+                TextView northView = view.findViewById(R.id.displayNorth);
+                TextView levelView = view.findViewById(R.id.displayLevel);
+                TextView depthView = view.findViewById(R.id.displayDepth);
+                TextView mbdView = view.findViewById(R.id.displayMBD);
+                TextView dateView = view.findViewById(R.id.displayDate);
+                TextView excavatorView = view.findViewById(R.id.displayExcavator);
+                TextView commentsView = view.findViewById(R.id.displayComments);
 
+                JSONObject jsonObject = new JSONObject(bundle.getString("jsonObject"));
+
+
+                displaySite = jsonObject.getString("site");
+                displayContents = jsonObject.getString("contents");
+                displayFeatureNums = jsonObject.getString("feature_nums");
+                displayEasting = jsonObject.getString("easting");
+                displayNorthing = jsonObject.getString("northing");
+                displayLevel = jsonObject.getString("level");
+                displayDepth = jsonObject.getString("depth");
+                displayMBD = jsonObject.getString("mbd");
+                displayDate = jsonObject.getString("date");
+                displayExcavator = jsonObject.getString("excavator");
+                displayComments = jsonObject.getString("comments");
+
+                qrCode = bundle.getParcelable("bitmap");
 
                 qrImage.setImageBitmap(qrCode);
                 siteView.setText(displaySite);
+                contentView.setText(displayContents);
+                featureNumView.setText(displayFeatureNums);
+                eastView.setText(displayEasting);
+                northView.setText(displayNorthing);
+                depthView.setText(displayDepth);
+                levelView.setText(displayLevel);
+                mbdView.setText(displayMBD);
+                dateView.setText(displayDate);
+                excavatorView.setText(displayExcavator);
+                commentsView.setText(displayComments);
 
             } catch (JSONException e) {
                 throw new RuntimeException(e);
