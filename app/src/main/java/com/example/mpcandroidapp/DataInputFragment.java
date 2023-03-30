@@ -1,9 +1,12 @@
 package com.example.mpcandroidapp;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
 import android.os.Message;
@@ -100,7 +103,9 @@ public class DataInputFragment extends Fragment {
                 excavator = excavatorInput.getText().toString();
                 comments = commentsInput.getText().toString();
 
-                submitButton.setEnabled(!site.isEmpty());
+                submitButton.setEnabled(!site.isEmpty() && !contents.isEmpty() && !feature_nums.isEmpty() &&
+                        !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
+                        !mbd.isEmpty() && !date.isEmpty() && !excavator.isEmpty());
             }
 
             @Override
@@ -134,6 +139,16 @@ public class DataInputFragment extends Fragment {
                         qrImage.setImageBitmap(myReceivedBitmap);
 
                         Log.d("SUCCESS", bundle.getString("_id"));
+
+                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        PrintFragment printFragment = new PrintFragment();
+                        Bundle newBundle = new Bundle();
+                        newBundle.putString("_id", uuid); // assuming username is the data you want to pass
+                        printFragment.setArguments(newBundle);
+                        fragmentTransaction.replace(R.id.fragmentFrameLayout, printFragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
 
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
@@ -218,4 +233,5 @@ public class DataInputFragment extends Fragment {
 
         }
     }
+
 }
