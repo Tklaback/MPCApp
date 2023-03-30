@@ -132,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_span="3"
-                android:inputType="text"
+                android:inputType="date"
                 tools:text="Server Host" />
         </TableRow>
         <TableRow>
@@ -168,13 +168,6 @@
             <Button
                 android:text="@string/submit"
                 android:id="@+id/submit"
-                />
-        </TableRow>
-        <TableRow>
-            <ImageView
-                android:id="@+id/qrImage"
-                android:layout_height="100dp"
-                android:layout_width="100dp"
                 />
         </TableRow>
 

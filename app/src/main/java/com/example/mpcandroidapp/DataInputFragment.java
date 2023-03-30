@@ -63,7 +63,7 @@ public class DataInputFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_data_input, container, false);
 
-        qrImage = view.findViewById(R.id.qrImage);
+//        qrImage = view.findViewById(R.id.qrImage);
 
         EditText siteInput = view.findViewById(R.id.site);
         EditText contentsInput = view.findViewById(R.id.contents);
@@ -136,15 +136,18 @@ public class DataInputFragment extends Fragment {
                         json.put("excavator", excavator);
                         json.put("comments", comments);
 
-                        qrImage.setImageBitmap(myReceivedBitmap);
+//                        qrImage.setImageBitmap(myReceivedBitmap);
 
                         Log.d("SUCCESS", bundle.getString("_id"));
 
                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         PrintFragment printFragment = new PrintFragment();
+
                         Bundle newBundle = new Bundle();
-                        newBundle.putString("_id", uuid); // assuming username is the data you want to pass
+                        newBundle.putString("jsonObject", json.toString()); // assuming username is the data you want to pass
+                        newBundle.putParcelable("bitmap", myReceivedBitmap);
+
                         printFragment.setArguments(newBundle);
                         fragmentTransaction.replace(R.id.fragmentFrameLayout, printFragment);
                         fragmentTransaction.addToBackStack(null);

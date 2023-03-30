@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/printFragment"
     android:layout_height="match_parent"
-    tools:context=".PrintFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    tools:context=".PrintFragment"
+    android:orientation="vertical"
+    >
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:gravity="center">
+        <TableRow
+            android:gravity="center">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/site" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/displaySite" />
+        </TableRow>
+        <TableRow>
+            <ImageView
+                android:id="@+id/qrImage"
+                android:layout_height="100dp"
+                android:layout_width="100dp"/>
+        </TableRow>
+    </TableLayout>
+</ScrollView>
 
-</FrameLayout>
