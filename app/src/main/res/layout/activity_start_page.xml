@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".StartPage">
 
+
+    <LinearLayout
+        android:id="@+id/textview_container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
     <Button
         android:id="@+id/addJson"
         android:text="Add"
