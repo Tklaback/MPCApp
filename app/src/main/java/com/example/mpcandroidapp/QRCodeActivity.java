@@ -36,15 +36,17 @@ public class QRCodeActivity extends AppCompatActivity {
         new Thread(() -> {
 
             DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(DataCache.getInstance().getCurSession().get_id()));
+            RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
+
+            if (recyclerView != null){
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                recyclerView.setLayoutManager(layoutManager);
+
+                QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), this);
+                recyclerView.setAdapter(adapter);
+            }
 
         }).start();
-        RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-        QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), this);
-        recyclerView.setAdapter(adapter);
 
         addQRCodeButton.setOnClickListener(v -> {
 
@@ -121,7 +123,6 @@ public class QRCodeActivity extends AppCompatActivity {
                     mContext.startActivity(intent);
 
                 }).start();
-                Toast.makeText(getTextView().getContext(), "QR CODE", Toast.LENGTH_LONG).show();
             }
         }
 

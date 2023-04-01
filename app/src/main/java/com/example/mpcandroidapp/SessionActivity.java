@@ -92,10 +92,12 @@ public class SessionActivity extends AppCompatActivity {
             RecyclerView recyclerView = findViewById(R.id.recycler_session);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-            recyclerView.setLayoutManager(layoutManager);
+            if (recyclerView != null){
+                recyclerView.setLayoutManager(layoutManager);
 
-            SessionAdapter adapter = new SessionAdapter(DataCache.getInstance().getAllSessions(), this);
-            recyclerView.setAdapter(adapter);
+                SessionAdapter adapter = new SessionAdapter(DataCache.getInstance().getAllSessions(), this);
+                recyclerView.setAdapter(adapter);
+            }
         }).start();
 
 
@@ -158,7 +160,6 @@ public class SessionActivity extends AppCompatActivity {
 
                 }).start();
 
-                Toast.makeText(getTextView().getContext(), "HELLO THERE", Toast.LENGTH_LONG).show();
             }
         }
 
