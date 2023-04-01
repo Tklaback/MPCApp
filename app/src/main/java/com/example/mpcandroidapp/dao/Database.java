@@ -11,7 +11,7 @@ import com.example.mpcandroidapp.model.Session;
 
 @androidx.room.Database(entities = {QRCode.class, Session.class}, version = 1)
 public abstract class Database extends RoomDatabase {
-    public static Database instance;
+    private static Database instance;
     private static final String DATABASE_NAME = "user-database";
 
     public static synchronized Database getInstance(Context context){

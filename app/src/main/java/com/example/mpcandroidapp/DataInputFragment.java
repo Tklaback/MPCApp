@@ -28,6 +28,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.UUID;
@@ -51,12 +52,27 @@ public class DataInputFragment extends Fragment {
 
     }
 
+    private void setEqual(String ...strings){
+        site = strings[0];
+        contents = strings[1];
+        feature_nums = strings[2];
+        easting = strings[3];
+        northing = strings[4];
+        level = strings[5];
+        depth = strings[6];
+        mbd = strings[7];
+        date = strings[8];
+        excavator = strings[9];
+        comments = strings[10];
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_data_input, container, false);
+
+        boolean isCurQRCode = DataCache.getInstance().getCurQRCode() != null;
 
         EditText siteInput = view.findViewById(R.id.site);
         EditText contentsInput = view.findViewById(R.id.contents);
@@ -75,25 +91,56 @@ public class DataInputFragment extends Fragment {
 
         submitButton.setEnabled(false);
 
+        if (isCurQRCode){
+            QRCode qrCode = DataCache.getInstance().getCurQRCode();
+            siteInput.setText(qrCode.getSite());
+            contentsInput.setText(qrCode.getContents());
+            featureNumsInput.setText(qrCode.getFeature_nums());
+            eastInput.setText(qrCode.getEasting());
+            northInput.setText(qrCode.getNorthing());
+            levelInput.setText(qrCode.getLevel());
+            depthInput.setText(qrCode.getDepth());
+            mbdInput.setText(qrCode.getMbd());
+            dateInput.setText(qrCode.getDate());
+            excavatorInput.setText(qrCode.getExcavator());
+            commentsInput.setText(qrCode.getComments());
+
+            setEqual(siteInput.getText().toString(),contentsInput.getText().toString(),featureNumsInput.getText().toString()
+                    ,eastInput.getText().toString(), northInput.getText().toString(), levelInput.getText().toString(), depthInput.getText().toString()
+                    , mbdInput.getText().toString(), dateInput.getText().toString(), excavatorInput.getText().toString()
+                    ,commentsInput.getText().toString());
+
+            submitButton.setEnabled(true);
+        }else {
+
+        }
+
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                submitButton.setEnabled(!site.isEmpty() && !contents.isEmpty() && !feature_nums.isEmpty() &&
+                        !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
+                        !mbd.isEmpty() && !date.isEmpty() && !excavator.isEmpty());
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                site = siteInput.getText().toString();
-                contents = contentsInput.getText().toString();
-                feature_nums = featureNumsInput.getText().toString();
-                easting = eastInput.getText().toString();
-                northing = northInput.getText().toString();
-                level = levelInput.getText().toString();
-                depth = depthInput.getText().toString();
-                mbd = mbdInput.getText().toString();
-                date = dateInput.getText().toString();
-                excavator = excavatorInput.getText().toString();
-                comments = commentsInput.getText().toString();
+//                site = siteInput.getText().toString();
+//                contents = contentsInput.getText().toString();
+//                feature_nums = featureNumsInput.getText().toString();
+//                easting = eastInput.getText().toString();
+//                northing = northInput.getText().toString();
+//                level = levelInput.getText().toString();
+//                depth = depthInput.getText().toString();
+//                mbd = mbdInput.getText().toString();
+//                date = dateInput.getText().toString();
+//                excavator = excavatorInput.getText().toString();
+//                comments = commentsInput.getText().toString();
+
+                setEqual(siteInput.getText().toString(),contentsInput.getText().toString(),featureNumsInput.getText().toString()
+                        ,eastInput.getText().toString(), northInput.getText().toString(), levelInput.getText().toString(), depthInput.getText().toString()
+                        , mbdInput.getText().toString(), dateInput.getText().toString(), excavatorInput.getText().toString()
+                        ,commentsInput.getText().toString());
 
                 submitButton.setEnabled(!site.isEmpty() && !contents.isEmpty() && !feature_nums.isEmpty() &&
                         !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
@@ -144,16 +191,49 @@ public class DataInputFragment extends Fragment {
         commentsInput.addTextChangedListener(textWatcher);
 
         submitButton.setOnClickListener(v -> {
-            UUID uuid = UUID.randomUUID();
+            if (!isCurQRCode){
+                UUID uuid = UUID.randomUUID();
 
-            QRCode qrCode = new QRCode(uuid.toString(), site, null, contents, feature_nums, easting, northing,
-                    level, depth, mbd, date, excavator, comments, DataCache.getInstance().getCurSession().get_id());
+                QRCode qrCode = new QRCode(uuid.toString(), site, null, contents, feature_nums, easting, northing,
+                        level, depth, mbd, date, excavator, comments, DataCache.getInstance().getCurSession().get_id());
 
-            DataCache.getInstance().setCurQRCode(qrCode);
+                DataCache.getInstance().setCurQRCode(qrCode);
 
-            CreateQRCode createQRCode = new CreateQRCode(handler, db);
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(createQRCode);
+                CreateQRCode createQRCode = new CreateQRCode(handler, db);
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                executorService.submit(createQRCode);
+            }else{
+                Bitmap myReceivedBitmap;
+                try {
+                    myReceivedBitmap = submitHandler();
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    PrintFragment printFragment = new PrintFragment();
+
+                    Bundle newBundle = new Bundle();
+
+                    new Thread(() -> {
+                        QRCodeDao qrCodeDao = db.qrCodeDao();
+                        qrCodeDao.updateQRCodeSite(site, contents, feature_nums, easting,
+                                northing, level, depth, mbd, date, excavator, comments,
+                                DataCache.getInstance().getCurQRCode().get_id());
+
+                        DataCache.getInstance().setCurQRCode(qrCodeDao.getQRCode(DataCache.getInstance().getCurQRCode().get_id()));
+                        newBundle.putParcelable("bitmap", myReceivedBitmap);
+
+                        printFragment.setArguments(newBundle);
+                        fragmentTransaction.replace(R.id.fragmentFrameLayout, printFragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }).start();
+
+
+
+                } catch (JSONException | WriterException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
         });
 
         return view;
@@ -183,31 +263,29 @@ public class DataInputFragment extends Fragment {
             Message message = new Message();
             Bundle bundle = new Bundle();
 
-            JSONObject json_data = new JSONObject();
             try {
-                json_data.put("_id", DataCache.getInstance().getCurQRCode().get_id());
+                qrCodeDao.addQRCode(DataCache.getInstance().getCurQRCode());
 
-                Log.d("json_data", json_data.toString());
-                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-                try {
-                    BitMatrix bitMatrix = multiFormatWriter.encode(String.valueOf(json_data), BarcodeFormat.QR_CODE, 400, 400);
-                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                    Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-
-                    qrCodeDao.addQRCode(DataCache.getInstance().getCurQRCode());
-
-                    bundle.putString("success", "true");
-                    message.obj = bitmap;
-                    message.setData(bundle);
-                    messageHandler.sendMessage(message);
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
+                bundle.putString("success", "true");
+                message.obj = DataInputFragment.submitHandler();
+                message.setData(bundle);
+                messageHandler.sendMessage(message);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private static Bitmap submitHandler() throws JSONException, WriterException {
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        JSONObject json_data = new JSONObject();
+        json_data.put("_id", DataCache.getInstance().getCurQRCode().get_id());
+        BitMatrix bitMatrix = multiFormatWriter.encode(String.valueOf(json_data), BarcodeFormat.QR_CODE, 400, 400);
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+        Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+        Log.d("json_data", json_data.toString());
+        return bitmap;
     }
 
 }

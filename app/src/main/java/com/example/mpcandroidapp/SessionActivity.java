@@ -113,7 +113,7 @@ public class SessionActivity extends AppCompatActivity {
                     DataCache.getInstance().setCurSession(curSession);
                     QRCodeDao qrCodeDao = Database.getInstance(mContext).qrCodeDao();
                     DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(curSession.get_id()));
-                    Intent intent = new Intent(v.getContext(), QRCodeActivity.class);
+                    Intent intent = new Intent(mContext, QRCodeActivity.class);
                     mContext.startActivity(intent);
 
                 }).start();
