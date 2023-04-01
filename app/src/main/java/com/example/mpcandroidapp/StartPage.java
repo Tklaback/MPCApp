@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 public class StartPage extends AppCompatActivity {
 
     Database db;
+    DataCache dataCache = DataCache.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,10 @@ public class StartPage extends AppCompatActivity {
             Session session = new Session(UUID.randomUUID().toString(), "dtf.format(localDate)");
 
             ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(() -> sessionDao.insert(session));
+            executorService.submit(() -> {
+                sessionDao.insert(session);
+                dataCache.setCurSession(session);
+            });
             executorService.shutdown();
 
             startActivity(intent);

@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mpcandroidapp.model.QRCode;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,7 +53,7 @@ public class PrintFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            try {
+//            try {
                 qrImage = view.findViewById(R.id.qrImage);
                 TextView siteView = view.findViewById(R.id.displaySite);
                 TextView contentView = view.findViewById(R.id.displayContent);
@@ -65,20 +67,33 @@ public class PrintFragment extends Fragment {
                 TextView excavatorView = view.findViewById(R.id.displayExcavator);
                 TextView commentsView = view.findViewById(R.id.displayComments);
 
-                JSONObject jsonObject = new JSONObject(bundle.getString("jsonObject"));
+                QRCode curQR = DataCache.getInstance().getCurQRCode();
 
+                displaySite = curQR.getSite();
+                displayContents = curQR.getContents();
+                displayFeatureNums = curQR.getFeature_nums();
+                displayEasting = curQR.getEasting();
+                displayNorthing = curQR.getNorthing();
+                displayLevel = curQR.getLevel();
+                displayDepth = curQR.getDepth();
+                displayMBD = curQR.getMbd();
+                displayDate = curQR.getDate();
+                displayExcavator = curQR.getExcavator();
+                displayComments = curQR.getComments();
 
-                displaySite = jsonObject.getString("site");
-                displayContents = jsonObject.getString("contents");
-                displayFeatureNums = jsonObject.getString("feature_nums");
-                displayEasting = jsonObject.getString("easting");
-                displayNorthing = jsonObject.getString("northing");
-                displayLevel = jsonObject.getString("level");
-                displayDepth = jsonObject.getString("depth");
-                displayMBD = jsonObject.getString("mbd");
-                displayDate = jsonObject.getString("date");
-                displayExcavator = jsonObject.getString("excavator");
-                displayComments = jsonObject.getString("comments");
+//                JSONObject jsonObject = new JSONObject(bundle.getString("jsonObject"));
+
+//                displaySite = jsonObject.getString("site");
+//                displayContents = jsonObject.getString("contents");
+//                displayFeatureNums = jsonObject.getString("feature_nums");
+//                displayEasting = jsonObject.getString("easting");
+//                displayNorthing = jsonObject.getString("northing");
+//                displayLevel = jsonObject.getString("level");
+//                displayDepth = jsonObject.getString("depth");
+//                displayMBD = jsonObject.getString("mbd");
+//                displayDate = jsonObject.getString("date");
+//                displayExcavator = jsonObject.getString("excavator");
+//                displayComments = jsonObject.getString("comments");
 
                 qrCode = bundle.getParcelable("bitmap");
 
@@ -95,9 +110,9 @@ public class PrintFragment extends Fragment {
                 excavatorView.setText(displayExcavator);
                 commentsView.setText(displayComments);
 
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+//            } catch (JSONException e) {
+//                throw new RuntimeException(e);
+//            }
         }
 
         return view;

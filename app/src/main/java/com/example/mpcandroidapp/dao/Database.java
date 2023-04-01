@@ -21,6 +21,7 @@ public abstract class Database extends RoomDatabase {
         }
         return instance;
     }
+
     public abstract QRCodeDao qrCodeDao();
     public abstract SessionDao sessionDao();
 }

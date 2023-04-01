@@ -22,6 +22,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import com.example.mpcandroidapp.dao.Database;
+import com.example.mpcandroidapp.dao.QRCodeDao;
+import com.example.mpcandroidapp.model.QRCode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -36,6 +39,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,6 +54,11 @@ public class DataInputFragment extends Fragment {
             excavator, comments;
 
     ImageView qrImage;
+
+    Database db;
+
+    DataCache dataCache;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,48 +123,30 @@ public class DataInputFragment extends Fragment {
             }
         };
 
+        db = Database.getInstance(requireActivity().getApplicationContext());
+
+//        dataCache = DataCache.getInstance();
+
         Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message){
                 Bundle bundle = message.getData();
                 if (bundle != null && !bundle.isEmpty()){
-                    JSONObject json = new JSONObject();
-                    String uuid = bundle.getString("_id");
                     Bitmap myReceivedBitmap = (Bitmap) message.obj;
-                    try {
-                        json.put("_id", uuid);
-                        json.put("site", site);
-                        json.put("contents", contents);
-                        json.put("feature_nums", feature_nums);
-                        json.put("easting", easting);
-                        json.put("northing", northing);
-                        json.put("level", level);
-                        json.put("depth", depth);
-                        json.put("mbd", mbd);
-                        json.put("date", date);
-                        json.put("excavator", excavator);
-                        json.put("comments", comments);
 
-//                        qrImage.setImageBitmap(myReceivedBitmap);
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    PrintFragment printFragment = new PrintFragment();
 
-                        Log.d("SUCCESS", bundle.getString("_id"));
+                    Bundle newBundle = new Bundle();
 
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        PrintFragment printFragment = new PrintFragment();
+                    newBundle.putParcelable("bitmap", myReceivedBitmap);
 
-                        Bundle newBundle = new Bundle();
-                        newBundle.putString("jsonObject", json.toString()); // assuming username is the data you want to pass
-                        newBundle.putParcelable("bitmap", myReceivedBitmap);
+                    printFragment.setArguments(newBundle);
+                    fragmentTransaction.replace(R.id.fragmentFrameLayout, printFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
 
-                        printFragment.setArguments(newBundle);
-                        fragmentTransaction.replace(R.id.fragmentFrameLayout, printFragment);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
                 }
             }
         };
@@ -175,7 +166,12 @@ public class DataInputFragment extends Fragment {
         submitButton.setOnClickListener(v -> {
             UUID uuid = UUID.randomUUID();
 
-            CreateQRCode createQRCode = new CreateQRCode(handler, qrImage, uuid.toString());
+            QRCode qrCode = new QRCode(uuid.toString(), site, null, contents, feature_nums, easting, northing,
+                    level, depth, mbd, date, excavator, comments, DataCache.getInstance().getCurSession().get_id());
+
+            DataCache.getInstance().setCurQRCode(qrCode);
+
+            CreateQRCode createQRCode = new CreateQRCode(handler, db);
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.submit(createQRCode);
 
@@ -188,17 +184,18 @@ public class DataInputFragment extends Fragment {
 
         private final Handler messageHandler;
 
-        String uuid;
+        QRCodeDao qrCodeDao;
 
-        ImageView qrImage;
+        Database db;
 
-        public CreateQRCode(Handler handler, ImageView view, String uuid){
 
-            this.uuid = uuid;
+        public CreateQRCode(Handler handler, Database db){
 
             this.messageHandler = handler;
 
-            this.qrImage = view;
+            qrCodeDao = db.qrCodeDao();
+
+            this.db = db;
 
         }
 
@@ -209,20 +206,20 @@ public class DataInputFragment extends Fragment {
 
             JSONObject json_data = new JSONObject();
             try {
-                json_data.put("_id", uuid);
+                json_data.put("_id", DataCache.getInstance().getCurQRCode());
 
                 Log.d("json_data", json_data.toString());
                 MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                 try {
-                    Log.d("json data", String.valueOf(json_data));
+//                    Log.d("json data", String.valueOf(json_data));
                     BitMatrix bitMatrix = multiFormatWriter.encode(String.valueOf(json_data), BarcodeFormat.QR_CODE, 400, 400);
                     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                     Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+
+                    qrCodeDao.addQRCode(DataCache.getInstance().getCurQRCode());
 //                    saveQR(bitmap);
 //                    qrImage.setImageBitmap(bitmap);
 
-
-                    bundle.putString("_id", uuid);
                     message.obj = bitmap;
                     message.setData(bundle);
                     messageHandler.sendMessage(message);
@@ -233,6 +230,7 @@ public class DataInputFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            messageHandler.sendMessage(null);
 
         }
     }
