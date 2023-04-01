@@ -44,4 +44,14 @@ public class DataCache {
     }
 
     List<Session> allSessions;
+
+    public List<QRCode> getSessionQRCodes() {
+        return sessionQRCodes;
+    }
+
+    public void setSessionQRCodes(List<QRCode> sessionQRCodes) {
+        this.sessionQRCodes = sessionQRCodes;
+    }
+
+    List<QRCode> sessionQRCodes;
 }
