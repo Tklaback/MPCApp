@@ -52,6 +52,14 @@ public class DataInputFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        DataCache.getInstance().setCurQRCode(null);
+    }
+
+
     private void setEqual(String ...strings){
         site = strings[0];
         contents = strings[1];
@@ -111,31 +119,16 @@ public class DataInputFragment extends Fragment {
                     ,commentsInput.getText().toString());
 
             submitButton.setEnabled(true);
-        }else {
-
         }
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                submitButton.setEnabled(!site.isEmpty() && !contents.isEmpty() && !feature_nums.isEmpty() &&
-                        !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
-                        !mbd.isEmpty() && !date.isEmpty() && !excavator.isEmpty());
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                site = siteInput.getText().toString();
-//                contents = contentsInput.getText().toString();
-//                feature_nums = featureNumsInput.getText().toString();
-//                easting = eastInput.getText().toString();
-//                northing = northInput.getText().toString();
-//                level = levelInput.getText().toString();
-//                depth = depthInput.getText().toString();
-//                mbd = mbdInput.getText().toString();
-//                date = dateInput.getText().toString();
-//                excavator = excavatorInput.getText().toString();
-//                comments = commentsInput.getText().toString();
 
                 setEqual(siteInput.getText().toString(),contentsInput.getText().toString(),featureNumsInput.getText().toString()
                         ,eastInput.getText().toString(), northInput.getText().toString(), levelInput.getText().toString(), depthInput.getText().toString()

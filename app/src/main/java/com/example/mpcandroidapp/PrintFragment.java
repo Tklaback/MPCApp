@@ -3,6 +3,7 @@ package com.example.mpcandroidapp;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 
 import android.util.JsonReader;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,32 +56,34 @@ public class PrintFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
 //            try {
-                qrImage = view.findViewById(R.id.qrImage);
-                TextView siteView = view.findViewById(R.id.displaySite);
-                TextView contentView = view.findViewById(R.id.displayContent);
-                TextView featureNumView = view.findViewById(R.id.displayFeatureNums);
-                TextView eastView = view.findViewById(R.id.displayEast);
-                TextView northView = view.findViewById(R.id.displayNorth);
-                TextView levelView = view.findViewById(R.id.displayLevel);
-                TextView depthView = view.findViewById(R.id.displayDepth);
-                TextView mbdView = view.findViewById(R.id.displayMBD);
-                TextView dateView = view.findViewById(R.id.displayDate);
-                TextView excavatorView = view.findViewById(R.id.displayExcavator);
-                TextView commentsView = view.findViewById(R.id.displayComments);
+            qrImage = view.findViewById(R.id.qrImage);
+            TextView siteView = view.findViewById(R.id.displaySite);
+            TextView contentView = view.findViewById(R.id.displayContent);
+            TextView featureNumView = view.findViewById(R.id.displayFeatureNums);
+            TextView eastView = view.findViewById(R.id.displayEast);
+            TextView northView = view.findViewById(R.id.displayNorth);
+            TextView levelView = view.findViewById(R.id.displayLevel);
+            TextView depthView = view.findViewById(R.id.displayDepth);
+            TextView mbdView = view.findViewById(R.id.displayMBD);
+            TextView dateView = view.findViewById(R.id.displayDate);
+            TextView excavatorView = view.findViewById(R.id.displayExcavator);
+            TextView commentsView = view.findViewById(R.id.displayComments);
 
-                QRCode curQR = DataCache.getInstance().getCurQRCode();
+            Button editButton = view.findViewById(R.id.editButton);
 
-                displaySite = curQR.getSite();
-                displayContents = curQR.getContents();
-                displayFeatureNums = curQR.getFeature_nums();
-                displayEasting = curQR.getEasting();
-                displayNorthing = curQR.getNorthing();
-                displayLevel = curQR.getLevel();
-                displayDepth = curQR.getDepth();
-                displayMBD = curQR.getMbd();
-                displayDate = curQR.getDate();
-                displayExcavator = curQR.getExcavator();
-                displayComments = curQR.getComments();
+            QRCode curQR = DataCache.getInstance().getCurQRCode();
+
+            displaySite = curQR.getSite();
+            displayContents = curQR.getContents();
+            displayFeatureNums = curQR.getFeature_nums();
+            displayEasting = curQR.getEasting();
+            displayNorthing = curQR.getNorthing();
+            displayLevel = curQR.getLevel();
+            displayDepth = curQR.getDepth();
+            displayMBD = curQR.getMbd();
+            displayDate = curQR.getDate();
+            displayExcavator = curQR.getExcavator();
+            displayComments = curQR.getComments();
 
 //                JSONObject jsonObject = new JSONObject(bundle.getString("jsonObject"));
 
@@ -95,20 +99,28 @@ public class PrintFragment extends Fragment {
 //                displayExcavator = jsonObject.getString("excavator");
 //                displayComments = jsonObject.getString("comments");
 
-                qrCode = bundle.getParcelable("bitmap");
+            qrCode = bundle.getParcelable("bitmap");
 
-                qrImage.setImageBitmap(qrCode);
-                siteView.setText(displaySite);
-                contentView.setText(displayContents);
-                featureNumView.setText(displayFeatureNums);
-                eastView.setText(displayEasting);
-                northView.setText(displayNorthing);
-                depthView.setText(displayDepth);
-                levelView.setText(displayLevel);
-                mbdView.setText(displayMBD);
-                dateView.setText(displayDate);
-                excavatorView.setText(displayExcavator);
-                commentsView.setText(displayComments);
+            qrImage.setImageBitmap(qrCode);
+            siteView.setText(displaySite);
+            contentView.setText(displayContents);
+            featureNumView.setText(displayFeatureNums);
+            eastView.setText(displayEasting);
+            northView.setText(displayNorthing);
+            depthView.setText(displayDepth);
+            levelView.setText(displayLevel);
+            mbdView.setText(displayMBD);
+            dateView.setText(displayDate);
+            excavatorView.setText(displayExcavator);
+            commentsView.setText(displayComments);
+
+            editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Call onBackPressed() to handle the back button press
+                    requireActivity().onBackPressed();
+                }
+            });
 
 //            } catch (JSONException e) {
 //                throw new RuntimeException(e);
