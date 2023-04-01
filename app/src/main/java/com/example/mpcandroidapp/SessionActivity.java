@@ -34,6 +34,46 @@ public class SessionActivity extends AppCompatActivity {
     Database db;
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        db = Database.getInstance(getApplicationContext());
+
+        setContentView(R.layout.activity_session);
+
+        Button addButton = findViewById(R.id.addSession);
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        SessionDao sessionDao = db.sessionDao();
+
+        new Thread(() -> {
+            DataCache.getInstance().setAllSessions(sessionDao.getAll());
+            RecyclerView recyclerView = findViewById(R.id.recycler_session);
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerView.setLayoutManager(layoutManager);
+
+            SessionAdapter adapter = new SessionAdapter(DataCache.getInstance().getAllSessions(), this);
+            recyclerView.setAdapter(adapter);
+        }).start();
+
+        addButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(this, QRCodeActivity.class);
+
+            Session session = new Session(UUID.randomUUID().toString(), java.time.LocalDate.now().toString());
+
+            executorService.submit(() -> {
+                sessionDao.insert(session);
+                DataCache.getInstance().setCurSession(session);
+            });
+            executorService.shutdown();
+
+            startActivity(intent);
+        });
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

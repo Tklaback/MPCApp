@@ -24,7 +24,35 @@ import java.util.List;
 import java.util.UUID;
 
 public class QRCodeActivity extends AppCompatActivity {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setContentView(R.layout.activity_qrcode);
 
+        Button addQRCodeButton = findViewById(R.id.addQRCode);
+
+        QRCodeDao qrCodeDao = Database.getInstance(this).qrCodeDao();
+
+        new Thread(() -> {
+
+            DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(DataCache.getInstance().getCurSession().get_id()));
+
+        }).start();
+        RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), this);
+        recyclerView.setAdapter(adapter);
+
+        addQRCodeButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(this, MainActivity.class);
+
+            startActivity(intent);
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

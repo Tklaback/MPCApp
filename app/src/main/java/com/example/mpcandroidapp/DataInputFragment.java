@@ -80,7 +80,6 @@ public class DataInputFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_data_input, container, false);
 
-        boolean isCurQRCode = DataCache.getInstance().getCurQRCode() != null;
 
         EditText siteInput = view.findViewById(R.id.site);
         EditText contentsInput = view.findViewById(R.id.contents);
@@ -99,7 +98,7 @@ public class DataInputFragment extends Fragment {
 
         submitButton.setEnabled(false);
 
-        if (isCurQRCode){
+        if (DataCache.getInstance().getCurQRCode() != null){
             QRCode qrCode = DataCache.getInstance().getCurQRCode();
             siteInput.setText(qrCode.getSite());
             contentsInput.setText(qrCode.getContents());
@@ -184,7 +183,7 @@ public class DataInputFragment extends Fragment {
         commentsInput.addTextChangedListener(textWatcher);
 
         submitButton.setOnClickListener(v -> {
-            if (!isCurQRCode){
+            if (DataCache.getInstance().getCurQRCode() == null){
                 UUID uuid = UUID.randomUUID();
 
                 QRCode qrCode = new QRCode(uuid.toString(), site, null, contents, feature_nums, easting, northing,
@@ -221,8 +220,6 @@ public class DataInputFragment extends Fragment {
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                     }).start();
-
-
 
                 } catch (JSONException | WriterException e) {
                     throw new RuntimeException(e);
