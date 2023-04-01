@@ -218,7 +218,9 @@ public class DataInputFragment extends Fragment {
                                 northing, level, depth, mbd, date, excavator, comments,
                                 DataCache.getInstance().getCurQRCode().get_id());
 
-                        DataCache.getInstance().setCurQRCode(qrCodeDao.getQRCode(DataCache.getInstance().getCurQRCode().get_id()));
+                        QRCode curQRCode = DataCache.getInstance().getCurQRCode();
+                        QRCode newQRCode = qrCodeDao.getQRCode(curQRCode.get_id());
+                        DataCache.getInstance().setCurQRCode(newQRCode);
                         newBundle.putParcelable("bitmap", myReceivedBitmap);
 
                         printFragment.setArguments(newBundle);
