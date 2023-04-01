@@ -1,6 +1,7 @@
 package com.example.mpcandroidapp;
 
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             super(view);
             // Define click listener for the ViewHolder's View
 
-            textView = (TextView) view.findViewById(R.id.textView);
+            textView = view.findViewById(R.id.textView);
+        }
+
+        private void bind(Session session){
+            getTextView().setText(session.get_id());
         }
 
         public TextView getTextView() {
@@ -43,6 +48,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
      */
     public CustomAdapter(List<Session> dataSet) {
         localDataSet = dataSet;
+
     }
 
     // Create new views (invoked by the layout manager)
@@ -60,7 +66,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet.get(position).get_id());
+        viewHolder.bind(localDataSet.get(position));
     }
 
     // Return the size of your dataset (invoked by the layout manager)

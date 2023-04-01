@@ -41,31 +41,16 @@ public class StartPage extends AppCompatActivity {
 
         SessionDao sessionDao = db.sessionDao();
 
-//        executorService.submit(() -> {
-//            DataCache.getInstance().setAllSessions(sessionDao.getAll());
-//            RecyclerView recyclerView = findViewById(R.id.recycler_view);
-//
-//            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-//            recyclerView.setLayoutManager(layoutManager);
-//
-//
-//            CustomAdapter adapter = new CustomAdapter(DataCache.getInstance().getAllSessions());
-//            recyclerView.setAdapter(adapter);
-//        });
-//        executorService.shutdown();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                DataCache.getInstance().setAllSessions(sessionDao.getAll());
-                RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        new Thread(() -> {
+            DataCache.getInstance().setAllSessions(sessionDao.getAll());
+            RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
-                LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-                recyclerView.setLayoutManager(layoutManager);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerView.setLayoutManager(layoutManager);
 
 
-                CustomAdapter adapter = new CustomAdapter(DataCache.getInstance().getAllSessions());
-                recyclerView.setAdapter(adapter);
-            }
+            CustomAdapter adapter = new CustomAdapter(DataCache.getInstance().getAllSessions());
+            recyclerView.setAdapter(adapter);
         }).start();
 
 
