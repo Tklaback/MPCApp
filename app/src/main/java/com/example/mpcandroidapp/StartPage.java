@@ -8,6 +8,7 @@ import android.content.Intent;
 
 import android.os.Bundle;
 
+import android.os.StrictMode;
 import android.widget.Button;
 
 import com.example.mpcandroidapp.dao.Database;
@@ -25,7 +26,6 @@ import java.util.concurrent.Executors;
 public class StartPage extends AppCompatActivity {
 
     Database db;
-    DataCache dataCache = DataCache.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +33,14 @@ public class StartPage extends AppCompatActivity {
 
         db = Database.getInstance(getApplicationContext());
 
-
         setContentView(R.layout.activity_start_page);
 
         Button addButton = findViewById(R.id.addJson);
 
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build());
 
         addButton.setOnClickListener(v -> {
 //            String fileName = "my_json_" + System.currentTimeMillis() + ".json";
@@ -52,10 +55,11 @@ public class StartPage extends AppCompatActivity {
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.submit(() -> {
                 sessionDao.insert(session);
-                dataCache.setCurSession(session);
+                DataCache.getInstance().setCurSession(session);
             });
             executorService.shutdown();
 
+            db.close();
             startActivity(intent);
         });
 

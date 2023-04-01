@@ -1,6 +1,5 @@
 package com.example.mpcandroidapp;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -18,8 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 
 import com.example.mpcandroidapp.dao.Database;
@@ -31,15 +28,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -53,12 +43,7 @@ public class DataInputFragment extends Fragment {
     private String site, fs, contents, feature_nums, easting, northing, level, depth, mbd, date,
             excavator, comments;
 
-    ImageView qrImage;
-
     Database db;
-
-    DataCache dataCache;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,10 +54,9 @@ public class DataInputFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_data_input, container, false);
-
-//        qrImage = view.findViewById(R.id.qrImage);
 
         EditText siteInput = view.findViewById(R.id.site);
         EditText contentsInput = view.findViewById(R.id.contents);
@@ -86,7 +70,6 @@ public class DataInputFragment extends Fragment {
         EditText dateInput = view.findViewById(R.id.date);
         EditText excavatorInput = view.findViewById(R.id.excavator);
         EditText commentsInput = view.findViewById(R.id.comments);
-
 
         Button submitButton = view.findViewById(R.id.submit);
 
@@ -125,8 +108,6 @@ public class DataInputFragment extends Fragment {
 
         db = Database.getInstance(requireActivity().getApplicationContext());
 
-//        dataCache = DataCache.getInstance();
-
         Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message){
@@ -146,7 +127,6 @@ public class DataInputFragment extends Fragment {
                     fragmentTransaction.replace(R.id.fragmentFrameLayout, printFragment);
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
-
                 }
             }
         };
@@ -174,7 +154,6 @@ public class DataInputFragment extends Fragment {
             CreateQRCode createQRCode = new CreateQRCode(handler, db);
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.submit(createQRCode);
-
         });
 
         return view;
@@ -206,20 +185,18 @@ public class DataInputFragment extends Fragment {
 
             JSONObject json_data = new JSONObject();
             try {
-                json_data.put("_id", DataCache.getInstance().getCurQRCode());
+                json_data.put("_id", DataCache.getInstance().getCurQRCode().get_id());
 
                 Log.d("json_data", json_data.toString());
                 MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                 try {
-//                    Log.d("json data", String.valueOf(json_data));
                     BitMatrix bitMatrix = multiFormatWriter.encode(String.valueOf(json_data), BarcodeFormat.QR_CODE, 400, 400);
                     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                     Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
 
                     qrCodeDao.addQRCode(DataCache.getInstance().getCurQRCode());
-//                    saveQR(bitmap);
-//                    qrImage.setImageBitmap(bitmap);
 
+                    bundle.putString("success", "true");
                     message.obj = bitmap;
                     message.setData(bundle);
                     messageHandler.sendMessage(message);
@@ -230,8 +207,6 @@ public class DataInputFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            messageHandler.sendMessage(null);
-
         }
     }
 
