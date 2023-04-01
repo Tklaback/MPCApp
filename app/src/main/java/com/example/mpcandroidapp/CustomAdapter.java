@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,12 +22,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder)
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final TextView textView;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
+            view.setOnClickListener(this);
 
             textView = view.findViewById(R.id.textView);
         }
@@ -37,6 +39,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         public TextView getTextView() {
             return textView;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(getTextView().getContext(), "HELLO THERE", Toast.LENGTH_LONG).show();
         }
     }
 
