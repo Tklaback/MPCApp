@@ -1,5 +1,6 @@
 package com.example.mpcandroidapp.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Entity(tableName = "Session")
 public class Session {
+    @NonNull
     @PrimaryKey(autoGenerate = false)
     private String _id;
 

@@ -14,8 +14,8 @@ public interface QRCodeDao {
     @Query("SELECT * FROM QRCode")
     List<QRCode> getAll();
 
-    @Query("SELECT * FROM QRCode WHERE sessionID = sessionID")
-    List<QRCode> loadAllInSession(String sessionID);
+    @Query("SELECT * FROM QRCode WHERE sessionID = (:ID)")
+    List<QRCode> loadAllInSession(String ID);
 
     @Insert
     void addQRCode(QRCode qrCode);

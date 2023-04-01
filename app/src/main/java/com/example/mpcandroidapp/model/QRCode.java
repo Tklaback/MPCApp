@@ -1,11 +1,26 @@
 package com.example.mpcandroidapp.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 @Entity(tableName = "QRCode")
 public class QRCode {
-    private String _id, site, fs, contents, feature_nums, easting, northing, level, depth, mbd, date,
+
+    @NonNull
+    @PrimaryKey
+    private String _id;
+
+    private String site, fs, contents, feature_nums, easting, northing, level, depth, mbd, date,
             excavator, comments, sessionID;
+
+    public String get_id() {
+        return _id;
+    }
+
+    public String getSessionID() {
+        return sessionID;
+    }
 
     public QRCode(String _id, String site, String fs, String contents, String feature_nums, String easting, String northing, String level, String depth, String mbd, String date, String excavator, String comments, String sessionID) {
         this._id = _id;
