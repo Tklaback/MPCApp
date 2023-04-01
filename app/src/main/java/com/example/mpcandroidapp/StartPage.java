@@ -1,24 +1,24 @@
 package com.example.mpcandroidapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.content.Intent;
 
 import android.os.Bundle;
 
-import android.os.StrictMode;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.example.mpcandroidapp.dao.Database;
 import com.example.mpcandroidapp.dao.SessionDao;
 import com.example.mpcandroidapp.model.Session;
 
-import org.json.JSONObject;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,35 +37,52 @@ public class StartPage extends AppCompatActivity {
 
         Button addButton = findViewById(R.id.addJson);
 
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectAll()
-                .penaltyLog()
-                .build());
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        SessionDao sessionDao = db.sessionDao();
+
+//        executorService.submit(() -> {
+//            DataCache.getInstance().setAllSessions(sessionDao.getAll());
+//            RecyclerView recyclerView = findViewById(R.id.recycler_view);
+//
+//            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+//            recyclerView.setLayoutManager(layoutManager);
+//
+//
+//            CustomAdapter adapter = new CustomAdapter(DataCache.getInstance().getAllSessions());
+//            recyclerView.setAdapter(adapter);
+//        });
+//        executorService.shutdown();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                DataCache.getInstance().setAllSessions(sessionDao.getAll());
+                RecyclerView recyclerView = findViewById(R.id.recycler_view);
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                recyclerView.setLayoutManager(layoutManager);
+
+
+                CustomAdapter adapter = new CustomAdapter(DataCache.getInstance().getAllSessions());
+                recyclerView.setAdapter(adapter);
+            }
+        }).start();
+
 
         addButton.setOnClickListener(v -> {
-//            String fileName = "my_json_" + System.currentTimeMillis() + ".json";
-//            createJSONFile();
-            Intent intent = new Intent(this, MainActivity.class);
-//            intent.putExtra("jsonFile", fileName);
-            SessionDao sessionDao = db.sessionDao();
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu/MM/dd");
-            LocalDate localDate = LocalDate.now();
-            Session session = new Session(UUID.randomUUID().toString(), "dtf.format(localDate)");
 
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Intent intent = new Intent(this, MainActivity.class);
+
+            Session session = new Session(UUID.randomUUID().toString(), java.time.LocalDate.now().toString());
+
             executorService.submit(() -> {
                 sessionDao.insert(session);
                 DataCache.getInstance().setCurSession(session);
             });
             executorService.shutdown();
 
-            db.close();
             startActivity(intent);
         });
-
-    }
-
-    private void createJSONFile(){
 
     }
 }

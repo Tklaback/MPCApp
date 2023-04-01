@@ -3,6 +3,8 @@ package com.example.mpcandroidapp;
 import com.example.mpcandroidapp.model.QRCode;
 import com.example.mpcandroidapp.model.Session;
 
+import java.util.List;
+
 public class DataCache {
 
     private static final DataCache instance = new DataCache();
@@ -33,5 +35,13 @@ public class DataCache {
 
     private QRCode curQRCode;
 
+    public List<Session> getAllSessions() {
+        return allSessions;
+    }
 
+    public void setAllSessions(List<Session> allSessions) {
+        this.allSessions = allSessions;
+    }
+
+    List<Session> allSessions;
 }
