@@ -14,5 +14,9 @@
     <string name="submit">Submit</string>
     <string name="comments">Comments:</string>
     <string name="print">print</string>
-    <string name="qrPage">QR Page</string>
+    <string name="sessionPage">Sessions</string>
+    <string name="qrPage">QR Codes</string>
+    <string name="edit">Edit QR</string>
+    <string name="add">Add</string>
+    <string name="export">Export</string>
 </resources>

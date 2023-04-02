@@ -150,7 +150,7 @@
         >
         <Button
             android:id="@+id/QRCodePage"
-            android:text="QR Codes"
+            android:text="@string/qrPage"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="16dp"
@@ -159,7 +159,7 @@
 
         <Button
             android:id="@+id/editButton"
-            android:text="Edit"
+            android:text="@string/edit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="16dp"

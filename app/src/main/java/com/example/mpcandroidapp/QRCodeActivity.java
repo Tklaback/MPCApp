@@ -87,10 +87,12 @@ public class QRCodeActivity extends AppCompatActivity {
             RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-            recyclerView.setLayoutManager(layoutManager);
+            if (recyclerView != null) {
+                recyclerView.setLayoutManager(layoutManager);
 
-            QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), this);
-            recyclerView.setAdapter(adapter);
+                QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), this);
+                recyclerView.setAdapter(adapter);
+            }
         }).start();
 
         addQRCodeButton.setOnClickListener(v -> {
