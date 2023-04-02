@@ -1,5 +1,6 @@
 package com.example.mpcandroidapp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -89,7 +90,9 @@ public class DataInputFragment extends Fragment {
         EditText excavatorInput = view.findViewById(R.id.excavator);
         EditText commentsInput = view.findViewById(R.id.comments);
 
-        Button submitButton = view.findViewById(R.id.submit);
+        Button submitButton = view.findViewById(R.id.print);
+
+        Button backToQR = view.findViewById(R.id.qrCodeBack);
 
         submitButton.setEnabled(false);
 
@@ -175,6 +178,14 @@ public class DataInputFragment extends Fragment {
         dateInput.addTextChangedListener(textWatcher);
         excavatorInput.addTextChangedListener(textWatcher);
         commentsInput.addTextChangedListener(textWatcher);
+
+        backToQR.setOnClickListener(v -> {
+
+            Intent intent = new Intent(getActivity(), QRCodeActivity.class);
+
+            startActivity(intent);
+
+        });
 
         submitButton.setOnClickListener(v -> {
             if (DataCache.getInstance().getCurQRCode() == null){

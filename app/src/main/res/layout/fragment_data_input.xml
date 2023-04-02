@@ -166,8 +166,13 @@
         <TableRow
             android:gravity="center">
             <Button
-                android:text="@string/submit"
-                android:id="@+id/submit"
+                android:text="@string/print"
+                android:id="@+id/print"
+                />
+            <Button
+                android:text="@string/qrPage"
+                android:id="@+id/qrCodeBack"
+                android:layout_margin="10dp"
                 />
         </TableRow>
 
