@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.example.mpcandroidapp.dao.QRCodeDao;
 import com.example.mpcandroidapp.model.QRCode;
 import com.example.mpcandroidapp.model.Session;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,9 +33,9 @@ public class QRCodeActivity extends AppCompatActivity {
 
         Button addQRCodeButton = findViewById(R.id.addQRCode);
 
-        QRCodeDao qrCodeDao = Database.getInstance(this).qrCodeDao();
-
         new Thread(() -> {
+
+            QRCodeDao qrCodeDao = Database.getInstance(this).qrCodeDao();
 
             DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(DataCache.getInstance().getCurSession().get_id()));
             RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
@@ -66,6 +68,8 @@ public class QRCodeActivity extends AppCompatActivity {
         Button addQRCodeButton = findViewById(R.id.addQRCode);
 
         QRCodeDao qrCodeDao = Database.getInstance(this).qrCodeDao();
+
+        Session curSesh = DataCache.getInstance().getCurSession();
 
         new Thread(() -> {
             DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(DataCache.getInstance().getCurSession().get_id()));

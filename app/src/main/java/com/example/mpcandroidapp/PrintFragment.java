@@ -1,5 +1,7 @@
 package com.example.mpcandroidapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -136,7 +138,11 @@ public class PrintFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    getActivity().onBackPressed();
+                    bundle.clear();
+
+                    Intent intent = new Intent(getActivity(), QRCodeActivity.class);
+
+                    startActivity(intent);
 
                 }
             });
