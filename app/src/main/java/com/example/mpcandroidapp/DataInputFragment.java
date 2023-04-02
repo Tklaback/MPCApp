@@ -46,19 +46,13 @@ public class DataInputFragment extends Fragment {
 
     Database db;
 
+    FragmentManager fragmentManager;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        DataCache.getInstance().setCurQRCode(null);
-    }
-
 
     private void setEqual(String ...strings){
         site = strings[0];
@@ -80,6 +74,7 @@ public class DataInputFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_data_input, container, false);
 
+        fragmentManager = requireActivity().getSupportFragmentManager();
 
         EditText siteInput = view.findViewById(R.id.site);
         EditText contentsInput = view.findViewById(R.id.contents);
@@ -154,7 +149,6 @@ public class DataInputFragment extends Fragment {
                 if (bundle != null && !bundle.isEmpty()){
                     Bitmap myReceivedBitmap = (Bitmap) message.obj;
 
-                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     PrintFragment printFragment = new PrintFragment();
 
@@ -198,7 +192,7 @@ public class DataInputFragment extends Fragment {
                 Bitmap myReceivedBitmap;
                 try {
                     myReceivedBitmap = submitHandler();
-                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     PrintFragment printFragment = new PrintFragment();
 

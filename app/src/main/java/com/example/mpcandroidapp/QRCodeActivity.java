@@ -58,6 +58,9 @@ public class QRCodeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DataCache.getInstance().setCurQRCode(null); //Needed so curQRcode does not stay the same
+
         setContentView(R.layout.activity_qrcode);
 
         Button addQRCodeButton = findViewById(R.id.addQRCode);

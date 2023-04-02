@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mpcandroidapp.dao.Database;
+import com.example.mpcandroidapp.dao.QRCodeDao;
 import com.example.mpcandroidapp.model.QRCode;
 
 import org.json.JSONException;
@@ -47,6 +49,7 @@ public class PrintFragment extends Fragment {
 
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,6 +73,7 @@ public class PrintFragment extends Fragment {
             TextView commentsView = view.findViewById(R.id.displayComments);
 
             Button editButton = view.findViewById(R.id.editButton);
+            Button activityButton = view.findViewById(R.id.QRCodePage);
 
             QRCode curQR = DataCache.getInstance().getCurQRCode();
 
@@ -119,6 +123,21 @@ public class PrintFragment extends Fragment {
                 public void onClick(View v) {
                     // Call onBackPressed() to handle the back button press
                     requireActivity().onBackPressed();
+                }
+            });
+
+
+            /*
+            * TODO: Make it so that second button
+            *   goes back to QRCodeActivity from printFragment.
+            * */
+
+            activityButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    getActivity().onBackPressed();
+
                 }
             });
 
