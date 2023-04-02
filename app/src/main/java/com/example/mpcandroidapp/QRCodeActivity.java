@@ -33,6 +33,8 @@ public class QRCodeActivity extends AppCompatActivity {
 
         Button addQRCodeButton = findViewById(R.id.addQRCode);
 
+        Button sessionButton = findViewById(R.id.sessionBack);
+
         new Thread(() -> {
 
             QRCodeDao qrCodeDao = Database.getInstance(this).qrCodeDao();
@@ -56,6 +58,15 @@ public class QRCodeActivity extends AppCompatActivity {
 
             startActivity(intent);
         });
+
+        sessionButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(QRCodeActivity.this, SessionActivity.class);
+
+            startActivity(intent);
+
+            finish();
+        });
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +78,9 @@ public class QRCodeActivity extends AppCompatActivity {
 
         Button addQRCodeButton = findViewById(R.id.addQRCode);
 
-        QRCodeDao qrCodeDao = Database.getInstance(this).qrCodeDao();
+        Button sessionButton = findViewById(R.id.sessionBack);
 
-        Session curSesh = DataCache.getInstance().getCurSession();
+        QRCodeDao qrCodeDao = Database.getInstance(this).qrCodeDao();
 
         new Thread(() -> {
             DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(DataCache.getInstance().getCurSession().get_id()));
@@ -87,6 +98,15 @@ public class QRCodeActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
 
             startActivity(intent);
+        });
+
+        sessionButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(QRCodeActivity.this, SessionActivity.class);
+
+            startActivity(intent);
+
+            finish();
         });
     }
 
@@ -161,6 +181,7 @@ public class QRCodeActivity extends AppCompatActivity {
             // Get element from your dataset at this position and replace the
             // contents of the view with that element
             viewHolder.bind(localDataSet.get(position));
+
         }
 
         // Return the size of your dataset (invoked by the layout manager)
