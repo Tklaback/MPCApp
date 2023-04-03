@@ -23,6 +23,11 @@ import com.example.mpcandroidapp.dao.Database;
 import com.example.mpcandroidapp.dao.QRCodeDao;
 import com.example.mpcandroidapp.model.QRCode;
 import com.example.mpcandroidapp.model.Session;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -227,9 +232,13 @@ public class QRCodeActivity extends AppCompatActivity {
             int serverPort = 65432; // Replace with the port number of your server
             try {
                 Socket socket = new Socket(serverAddress, serverPort);
+                
+                Gson gson = new Gson();
+
+                String json = gson.toJson(DataCache.getInstance().getSessionQRCodes());
 
                 OutputStream outputStream = socket.getOutputStream();
-                outputStream.write("Hello, server!".getBytes());
+                outputStream.write(json.getBytes());
 
                 InputStream inputStream = socket.getInputStream();
                 byte[] buffer = new byte[1024];
@@ -247,6 +256,10 @@ public class QRCodeActivity extends AppCompatActivity {
                 bundle.putBoolean("SUCCESS", false);
                 message.setData(bundle);
                 mHandler.sendMessage(message);
+            } catch (JSONException e) {
+                bundle.putBoolean("SUCCESS", false);
+                message.setData(bundle);
+//                throw new RuntimeException(e);
             }
         }).start();
 
