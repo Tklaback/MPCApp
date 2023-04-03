@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -204,7 +207,22 @@ public class QRCodeActivity extends AppCompatActivity {
     }
 
     private void sendData(){
+        Handler mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                Bundle bundle = message.getData();
+                boolean success = bundle.getBoolean("SUCCESS");
+                if (success)
+                    Toast.makeText(getApplicationContext(), "Data Successfully Sent To Server",
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplicationContext(), "Error: Failure Connecting to Server",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
         new Thread(() -> {
+            Bundle bundle = new Bundle();
+            Message message = Message.obtain();
             String serverAddress = "192.168.1.13"; // Replace with the IP address or hostname of your server
             int serverPort = 65432; // Replace with the port number of your server
             try {
@@ -219,12 +237,18 @@ public class QRCodeActivity extends AppCompatActivity {
                 String response = new String(buffer, 0, bytesRead);
                 Log.d("RECEIVED DATA", "Received response from server: " + response);
 
+                bundle.putBoolean("SUCCESS", true);
+                message.setData(bundle);
+                mHandler.sendMessage(message);
+
                 socket.close();
 
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                bundle.putBoolean("SUCCESS", false);
+                message.setData(bundle);
+                mHandler.sendMessage(message);
             }
-
         }).start();
+
     }
 }
