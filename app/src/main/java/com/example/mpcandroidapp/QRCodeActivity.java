@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +21,11 @@ import com.example.mpcandroidapp.dao.QRCodeDao;
 import com.example.mpcandroidapp.model.QRCode;
 import com.example.mpcandroidapp.model.Session;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.List;
-import java.util.UUID;
 
 public class QRCodeActivity extends AppCompatActivity {
     @Override
@@ -34,6 +36,8 @@ public class QRCodeActivity extends AppCompatActivity {
         Button addQRCodeButton = findViewById(R.id.addQRCode);
 
         Button sessionButton = findViewById(R.id.sessionBack);
+
+        Button exportButton = findViewById(R.id.export);
 
         new Thread(() -> {
 
@@ -67,6 +71,8 @@ public class QRCodeActivity extends AppCompatActivity {
 
             finish();
         });
+
+        exportButton.setOnClickListener(v -> sendData());
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +87,8 @@ public class QRCodeActivity extends AppCompatActivity {
         Button sessionButton = findViewById(R.id.sessionBack);
 
         QRCodeDao qrCodeDao = Database.getInstance(this).qrCodeDao();
+
+        Button exportButton = findViewById(R.id.export);
 
         new Thread(() -> {
             DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(DataCache.getInstance().getCurSession().get_id()));
@@ -110,6 +118,8 @@ public class QRCodeActivity extends AppCompatActivity {
 
             finish();
         });
+
+        exportButton.setOnClickListener(v -> sendData());
     }
 
     public static class QRCodeAdapter extends RecyclerView.Adapter<QRCodeAdapter.ViewHolder> {
@@ -191,5 +201,30 @@ public class QRCodeActivity extends AppCompatActivity {
         public int getItemCount() {
             return localDataSet.size();
         }
+    }
+
+    private void sendData(){
+        new Thread(() -> {
+            String serverAddress = "192.168.1.13"; // Replace with the IP address or hostname of your server
+            int serverPort = 65432; // Replace with the port number of your server
+            try {
+                Socket socket = new Socket(serverAddress, serverPort);
+
+                OutputStream outputStream = socket.getOutputStream();
+                outputStream.write("Hello, server!".getBytes());
+
+                InputStream inputStream = socket.getInputStream();
+                byte[] buffer = new byte[1024];
+                int bytesRead = inputStream.read(buffer);
+                String response = new String(buffer, 0, bytesRead);
+                Log.d("RECEIVED DATA", "Received response from server: " + response);
+
+                socket.close();
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }).start();
     }
 }
