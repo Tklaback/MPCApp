@@ -47,22 +47,29 @@ public class QRCodeActivity extends AppCompatActivity {
 
         Button exportButton = findViewById(R.id.export);
 
-        new Thread(() -> {
+        Handler mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
 
+                if (recyclerView != null){
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                    recyclerView.setLayoutManager(layoutManager);
+
+                    QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), QRCodeActivity.this);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+        };
+        new Thread(() -> {
+            Message message = Message.obtain();
             QRCodeDao qrCodeDao = Database.getInstance(this).qrCodeDao();
 
             DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(DataCache.getInstance().getCurSession().get_id()));
-            RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
 
-            if (recyclerView != null){
-                LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-                recyclerView.setLayoutManager(layoutManager);
-
-                QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), this);
-                recyclerView.setAdapter(adapter);
-            }
-
+            mHandler.sendMessage(message);
         }).start();
+
 
         addQRCodeButton.setOnClickListener(v -> {
 
@@ -98,17 +105,26 @@ public class QRCodeActivity extends AppCompatActivity {
 
         Button exportButton = findViewById(R.id.export);
 
+
+        Handler mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                if (recyclerView != null) {
+                    recyclerView.setLayoutManager(layoutManager);
+
+                    QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), QRCodeActivity.this);
+                    recyclerView.setAdapter(adapter);
+                }
+
+            }
+        };
         new Thread(() -> {
             DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(DataCache.getInstance().getCurSession().get_id()));
-            RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-            if (recyclerView != null) {
-                recyclerView.setLayoutManager(layoutManager);
-
-                QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), this);
-                recyclerView.setAdapter(adapter);
-            }
+            mHandler.sendMessage(Message.obtain());
         }).start();
 
         addQRCodeButton.setOnClickListener(v -> {
@@ -232,7 +248,7 @@ public class QRCodeActivity extends AppCompatActivity {
             int serverPort = 65432; // Replace with the port number of your server
             try {
                 Socket socket = new Socket(serverAddress, serverPort);
-                
+
                 Gson gson = new Gson();
 
                 String json = gson.toJson(DataCache.getInstance().getSessionQRCodes());
@@ -252,14 +268,10 @@ public class QRCodeActivity extends AppCompatActivity {
 
                 socket.close();
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 bundle.putBoolean("SUCCESS", false);
                 message.setData(bundle);
                 mHandler.sendMessage(message);
-            } catch (JSONException e) {
-                bundle.putBoolean("SUCCESS", false);
-                message.setData(bundle);
-//                throw new RuntimeException(e);
             }
         }).start();
 

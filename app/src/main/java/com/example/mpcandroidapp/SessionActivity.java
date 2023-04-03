@@ -11,6 +11,9 @@ import android.content.Intent;
 
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,15 +50,23 @@ public class SessionActivity extends AppCompatActivity {
 
         SessionDao sessionDao = db.sessionDao();
 
+        Handler mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                RecyclerView recyclerView = findViewById(R.id.recycler_session);
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                if (recyclerView != null){
+                    recyclerView.setLayoutManager(layoutManager);
+
+                    SessionAdapter adapter = new SessionAdapter(DataCache.getInstance().getAllSessions(), SessionActivity.this);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+        };
         new Thread(() -> {
             DataCache.getInstance().setAllSessions(sessionDao.getAll());
-            RecyclerView recyclerView = findViewById(R.id.recycler_session);
-
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-            recyclerView.setLayoutManager(layoutManager);
-
-            SessionAdapter adapter = new SessionAdapter(DataCache.getInstance().getAllSessions(), this);
-            recyclerView.setAdapter(adapter);
+            mHandler.sendMessage(Message.obtain());
         }).start();
 
         addButton.setOnClickListener(v -> {
@@ -87,17 +98,24 @@ public class SessionActivity extends AppCompatActivity {
 
         SessionDao sessionDao = db.sessionDao();
 
+        Handler mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                RecyclerView recyclerView = findViewById(R.id.recycler_session);
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                if (recyclerView != null){
+                    recyclerView.setLayoutManager(layoutManager);
+
+                    SessionAdapter adapter = new SessionAdapter(DataCache.getInstance().getAllSessions(), SessionActivity.this);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+        };
         new Thread(() -> {
             DataCache.getInstance().setAllSessions(sessionDao.getAll());
-            RecyclerView recyclerView = findViewById(R.id.recycler_session);
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-            if (recyclerView != null){
-                recyclerView.setLayoutManager(layoutManager);
-
-                SessionAdapter adapter = new SessionAdapter(DataCache.getInstance().getAllSessions(), this);
-                recyclerView.setAdapter(adapter);
-            }
+            mHandler.sendMessage(Message.obtain());
         }).start();
 
 
