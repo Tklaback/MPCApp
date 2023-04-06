@@ -16,8 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 
 import com.example.mpcandroidapp.dao.Database;
@@ -32,6 +35,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -78,7 +82,7 @@ public class DataInputFragment extends Fragment {
         fragmentManager = requireActivity().getSupportFragmentManager();
 
         EditText siteInput = view.findViewById(R.id.site);
-        EditText contentsInput = view.findViewById(R.id.contents);
+        Spinner contentsInput = view.findViewById(R.id.contents);
 //        EditText fs = view.findViewById(R.id.);
         EditText featureNumsInput = view.findViewById(R.id.feature_nums);
         EditText eastInput = view.findViewById(R.id.east);
@@ -96,10 +100,14 @@ public class DataInputFragment extends Fragment {
 
         submitButton.setEnabled(false);
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Contents.getInstance().getItems());
+        contentsInput.setAdapter(adapter);
+
         if (DataCache.getInstance().getCurQRCode() != null){
             QRCode qrCode = DataCache.getInstance().getCurQRCode();
             siteInput.setText(qrCode.getSite());
-            contentsInput.setText(qrCode.getContents());
+            int pos = Contents.getInstance().getItems().indexOf(qrCode.getContents());
+            contentsInput.setSelection(pos, true);
             featureNumsInput.setText(qrCode.getFeature_nums());
             eastInput.setText(qrCode.getEasting());
             northInput.setText(qrCode.getNorthing());
@@ -110,13 +118,29 @@ public class DataInputFragment extends Fragment {
             excavatorInput.setText(qrCode.getExcavator());
             commentsInput.setText(qrCode.getComments());
 
-            setEqual(siteInput.getText().toString(),contentsInput.getText().toString(),featureNumsInput.getText().toString()
+            setEqual(siteInput.getText().toString(), qrCode.getContents() ,featureNumsInput.getText().toString()
                     ,eastInput.getText().toString(), northInput.getText().toString(), levelInput.getText().toString(), depthInput.getText().toString()
                     , mbdInput.getText().toString(), dateInput.getText().toString(), excavatorInput.getText().toString()
                     ,commentsInput.getText().toString());
 
             submitButton.setEnabled(true);
+
+            submitButton.setEnabled(!site.isEmpty() && contents != null && !feature_nums.isEmpty() &&
+                    !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
+                    !mbd.isEmpty() && !date.isEmpty() && !excavator.isEmpty());
         }
+
+        contentsInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                contents = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -127,12 +151,13 @@ public class DataInputFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                setEqual(siteInput.getText().toString(),contentsInput.getText().toString(),featureNumsInput.getText().toString()
+                setEqual(siteInput.getText().toString(), (String) contentsInput.getSelectedItem(),
+                        featureNumsInput.getText().toString()
                         ,eastInput.getText().toString(), northInput.getText().toString(), levelInput.getText().toString(), depthInput.getText().toString()
                         , mbdInput.getText().toString(), dateInput.getText().toString(), excavatorInput.getText().toString()
                         ,commentsInput.getText().toString());
 
-                submitButton.setEnabled(!site.isEmpty() && !contents.isEmpty() && !feature_nums.isEmpty() &&
+                submitButton.setEnabled(!site.isEmpty() && contents != null && !feature_nums.isEmpty() &&
                         !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
                         !mbd.isEmpty() && !date.isEmpty() && !excavator.isEmpty());
             }
@@ -168,7 +193,7 @@ public class DataInputFragment extends Fragment {
         };
 
         siteInput.addTextChangedListener(textWatcher);
-        contentsInput.addTextChangedListener(textWatcher);
+//        contentsInput.addTextChangedListener(textWatcher);
         featureNumsInput.addTextChangedListener(textWatcher);
         eastInput.addTextChangedListener(textWatcher);
         northInput.addTextChangedListener(textWatcher);
@@ -284,5 +309,38 @@ public class DataInputFragment extends Fragment {
         Log.d("json_data", json_data.toString());
         return bitmap;
     }
+//
+//    public class MyAdapter extends ArrayAdapter<MyEnum> {
+//
+//        public MyAdapter (Context context) {
+//            super(context, 0, MyEnum.values());
+//        }
+//
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//            CheckedTextView text= (CheckedTextView) convertView;
+//
+//            if (text== null) {
+//                text = (CheckedTextView) LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_dropdown_item,  parent, false);
+//            }
+//
+//            text.setText(getItem(position).getDescriptionResourceId());
+//
+//            return text;
+//        }
+//
+//        @Override
+//        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+//            CheckedTextView text = (CheckedTextView) convertView;
+//
+//            if (text == null) {
+//                text = (CheckedTextView) LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_dropdown_item,  parent, false);
+//            }
+//
+//            text.setText(getItem(position).getTitle());
+//
+//            return text;
+//        }
+//    }
 
 }
