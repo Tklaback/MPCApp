@@ -1,49 +1,70 @@
 package com.example.mpcandroidapp;
 
+import android.content.Context;
+import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
+
+import com.example.mpcandroidapp.model.Session;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Contents {
-    private final ArrayList<String> items = new ArrayList<>();
-    private static final Contents instance = new Contents();
-    public static Contents getInstance () {
-        return instance;
+    private Context context;
+
+    HashMap<String, ArrayList<String>> data = new HashMap<>();
+
+    public HashMap<String, ArrayList<String>> getItems(){
+        return data;
     }
 
-    public ArrayList<String> getItems(){
-        return items;
+    public Contents(Context context){
+        this.context = context;
+
+        parseFile();
     }
 
-    private Contents(){
-        items.add("adobe");
-        items.add("bead");
-        items.add("botanical");
-        items.add("ceramics");
-        items.add("charcoal");
-        items.add("pipe");
-        items.add("dendro_sample");
-        items.add("eggshell");
-        items.add("faunal_bone");
-        items.add("figurine");
-        items.add("fire_cracked_rock");
-        items.add("flotation_sample");
-        items.add("groundstone");
-        items.add("historic_glass");
-        items.add("historic_metal");
+    private void parseFile(){
 
-        items.add("human_bone");
-        items.add("lithic");
-        items.add("mineral");
-        items.add("miscellaneous");
-        items.add("misc_stone");
-        items.add("pollen_sample");
-        items.add("projectile_point");
-        items.add("shell");
-        items.add("stone_tool");
-        items.add("turquoise");
-        items.add("wood");
-        items.add("worked_bone");
-        items.add("worked_ceramic");
-        items.add("worked_stone");
+        String dataStr = getData();
+
+        String[] newArr = dataStr.split("\n");
+
+        int itm = 0;
+        while (itm < newArr.length){
+            String curString = newArr[itm];
+            data.put(curString, new ArrayList<>());
+            itm++;
+            while (itm < newArr.length && newArr[itm].charAt(0) == ' '){
+                data.get(curString).add(newArr[itm].substring(1));
+                itm++;
+            }
+        }
+    }
+
+    private String getData(){
+        try(InputStream inputStream = context.getResources().openRawResource(R.raw.contents_seeder)){
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            byte[] buff = new byte[1024];
+            int num;
+            while ((num = inputStream.read(buff)) != -1){
+                result.write(buff, 0, num);
+            }
+            return result.toString(StandardCharsets.UTF_8.name());
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
 }

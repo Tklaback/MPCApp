@@ -36,6 +36,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,6 +48,7 @@ import java.util.concurrent.Executors;
  * create an instance of this fragment.
  */
 public class DataInputFragment extends Fragment {
+    Contents contentsOptions;
     private String site, fs, contents, feature_nums, easting, northing, level, depth, mbd, date,
             excavator, comments;
 
@@ -76,6 +79,7 @@ public class DataInputFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        contentsOptions = new Contents(getContext());
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_data_input, container, false);
 
@@ -100,13 +104,15 @@ public class DataInputFragment extends Fragment {
 
         submitButton.setEnabled(false);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Contents.getInstance().getItems());
+        ArrayList<String> primaryContents = new ArrayList<>(contentsOptions.getItems().keySet());
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, primaryContents);
         contentsInput.setAdapter(adapter);
 
         if (DataCache.getInstance().getCurQRCode() != null){
             QRCode qrCode = DataCache.getInstance().getCurQRCode();
             siteInput.setText(qrCode.getSite());
-            int pos = Contents.getInstance().getItems().indexOf(qrCode.getContents());
+            int pos = primaryContents.indexOf(qrCode.getContents());
             contentsInput.setSelection(pos, true);
             featureNumsInput.setText(qrCode.getFeature_nums());
             eastInput.setText(qrCode.getEasting());
@@ -193,7 +199,6 @@ public class DataInputFragment extends Fragment {
         };
 
         siteInput.addTextChangedListener(textWatcher);
-//        contentsInput.addTextChangedListener(textWatcher);
         featureNumsInput.addTextChangedListener(textWatcher);
         eastInput.addTextChangedListener(textWatcher);
         northInput.addTextChangedListener(textWatcher);

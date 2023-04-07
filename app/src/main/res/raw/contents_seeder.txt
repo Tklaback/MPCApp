@@ -1,0 +1,59 @@
+Adobe
+Bead
+    Bone
+    Shell
+    Stone
+Botanical
+    Bean
+    Corn
+    Corncob
+    Reed
+    Roofing Material/Roof Fall
+    Seed
+    Unknown Fiber
+Ceramics
+Charcoal
+Pipe
+    Ceramic
+    Stone
+Dendro Sample
+Eggshell
+Faunal Bone
+Figurine
+    Fragment
+Fire-cracked Rock (FCR)
+Flotation Sample
+Groundstone
+Historic Glass
+Historic Metal
+Human Bone
+Lithic
+Mineral
+Miscellaneous
+V   arious Speculations
+Misc. Stone
+    Pumice Stone
+Pollen Sample
+Projectile Point
+Shell
+Stone Tool
+    Biface
+    Chopper
+    Core
+    Drill
+    Hammerstone
+    Scraper
+    Uniface
+    Utilized Flake
+Turquoise
+Wood
+    Worked
+    Unburned
+Worked Bone
+    Awl
+    Gaming Piece
+Worked Ceramic
+    Spindle Whorl
+Worked Stone
+    Awl
+    Gaming Piece
