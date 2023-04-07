@@ -28,7 +28,7 @@ public class Session {
 
     private String name;
 
-    public Session(String _id, String date, String name) {
+    public Session(@NonNull String _id, String date, String name) {
         this._id = _id;
         this.date = date;
         this.name = name;

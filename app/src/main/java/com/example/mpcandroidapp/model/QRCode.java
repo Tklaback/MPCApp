@@ -2,9 +2,13 @@ package com.example.mpcandroidapp.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "QRCode")
+@Entity(tableName = "QRCode",foreignKeys = @ForeignKey(entity = Session.class,
+        parentColumns = "_id",
+        childColumns = "sessionID",
+        onDelete = ForeignKey.CASCADE))
 public class QRCode {
 
     @NonNull
@@ -33,6 +37,7 @@ public class QRCode {
     private String date;
     private String excavator;
     private String comments;
+
     private String sessionID;
 
     public String get_id() {
@@ -43,7 +48,7 @@ public class QRCode {
         return sessionID;
     }
 
-    public QRCode(String _id, String site, String fs, String contents, String secondaryContents, String feature_nums, String easting, String northing, String level, String depth, String mbd, String date, String excavator, String comments, String sessionID) {
+    public QRCode(@NonNull String _id, String site, String fs, String contents, String secondaryContents, String feature_nums, String easting, String northing, String level, String depth, String mbd, String date, String excavator, String comments, String sessionID) {
         this._id = _id;
         this.site = site;
         this.fs = fs;
