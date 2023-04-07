@@ -18,9 +18,20 @@ public class Session {
     @ColumnInfo(name = "date")
     private String date;
 
-    public Session(String _id, String date) {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
+
+    public Session(String _id, String date, String name) {
         this._id = _id;
         this.date = date;
+        this.name = name;
     }
 
     public String get_id() {

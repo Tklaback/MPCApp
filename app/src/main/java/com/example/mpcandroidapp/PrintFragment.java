@@ -60,7 +60,6 @@ public class PrintFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-//            try {
             qrImage = view.findViewById(R.id.qrImage);
             TextView siteView = view.findViewById(R.id.displaySite);
             TextView contentView = view.findViewById(R.id.displayContent);
@@ -137,9 +136,6 @@ public class PrintFragment extends Fragment {
                 }
             });
 
-//            } catch (JSONException e) {
-//                throw new RuntimeException(e);
-//            }
         }
 
         return view;

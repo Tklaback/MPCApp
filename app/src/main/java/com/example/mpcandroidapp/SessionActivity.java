@@ -2,6 +2,9 @@ package com.example.mpcandroidapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,17 +74,23 @@ public class SessionActivity extends AppCompatActivity {
 
         addButton.setOnClickListener(v -> {
 
-            Intent intent = new Intent(this, QRCodeActivity.class);
+            FragmentManager manager = getSupportFragmentManager();
 
-            Session session = new Session(UUID.randomUUID().toString(), java.time.LocalDate.now().toString());
+            DialogFragment dialogFragment = new DialogFragment();
 
-            executorService.submit(() -> {
-                sessionDao.insert(session);
-                DataCache.getInstance().setCurSession(session);
-            });
-            executorService.shutdown();
+            dialogFragment.show(manager, "NEW SESSION");
 
-            startActivity(intent);
+//            Intent intent = new Intent(this, QRCodeActivity.class);
+//
+//            Session session = new Session(UUID.randomUUID().toString(), java.time.LocalDate.now().toString());
+//
+//            executorService.submit(() -> {
+//                sessionDao.insert(session);
+//                DataCache.getInstance().setCurSession(session);
+//            });
+//            executorService.shutdown();
+//
+//            startActivity(intent);
         });
     }
     @Override
@@ -121,17 +130,17 @@ public class SessionActivity extends AppCompatActivity {
 
         addButton.setOnClickListener(v -> {
 
-            Intent intent = new Intent(this, QRCodeActivity.class);
+//            Intent intent = new Intent(this, QRCodeActivity.class);
 
-            Session session = new Session(UUID.randomUUID().toString(), java.time.LocalDate.now().toString());
+//            Session session = new Session(UUID.randomUUID().toString(), java.time.LocalDate.now().toString());
 
-            executorService.submit(() -> {
-                sessionDao.insert(session);
-                DataCache.getInstance().setCurSession(session);
-            });
-            executorService.shutdown();
-
-            startActivity(intent);
+//            executorService.submit(() -> {
+//                sessionDao.insert(session);
+//                DataCache.getInstance().setCurSession(session);
+//            });
+//            executorService.shutdown();
+//
+//            startActivity(intent);
         });
 
     }
@@ -170,11 +179,17 @@ public class SessionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new Thread(()->{
-                    DataCache.getInstance().setCurSession(curSession);
-                    QRCodeDao qrCodeDao = Database.getInstance(mContext).qrCodeDao();
-                    DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(curSession.get_id()));
-                    Intent intent = new Intent(mContext, QRCodeActivity.class);
-                    mContext.startActivity(intent);
+                    FragmentManager manager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
+
+                    SessionDialogFragment dialogFragment = new SessionDialogFragment();
+
+                    dialogFragment.show(manager, "NEW SESSION");
+
+//                    DataCache.getInstance().setCurSession(curSession);
+//                    QRCodeDao qrCodeDao = Database.getInstance(mContext).qrCodeDao();
+//                    DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(curSession.get_id()));
+//                    Intent intent = new Intent(mContext, QRCodeActivity.class);
+//                    mContext.startActivity(intent);
 
                 }).start();
 

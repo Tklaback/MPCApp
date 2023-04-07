@@ -44,7 +44,7 @@ public class Contents {
             data.put(curString, new ArrayList<>());
             itm++;
             while (itm < newArr.length && newArr[itm].charAt(0) == ' '){
-                data.get(curString).add(newArr[itm].substring(1));
+                data.get(curString).add(newArr[itm].substring(4));
                 itm++;
             }
         }
