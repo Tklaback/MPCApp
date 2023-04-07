@@ -5,11 +5,12 @@ import android.content.Context;
 
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
 
 import com.example.mpcandroidapp.model.QRCode;
 import com.example.mpcandroidapp.model.Session;
 
-@androidx.room.Database(entities = {QRCode.class, Session.class}, version = 1)
+@androidx.room.Database(entities = {QRCode.class, Session.class}, version = 2)
 public abstract class Database extends RoomDatabase {
     private static Database instance;
     private static final String DATABASE_NAME = "user-database";
@@ -17,7 +18,9 @@ public abstract class Database extends RoomDatabase {
     public static synchronized Database getInstance(Context context){
         if (instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                    Database.class, DATABASE_NAME).build();
+                    Database.class, DATABASE_NAME)
+                    .addMigrations(DatabaseMigration.MIGRATION_1_2)
+                    .build();
         }
         return instance;
     }

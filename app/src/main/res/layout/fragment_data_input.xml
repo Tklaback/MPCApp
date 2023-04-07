@@ -40,6 +40,18 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
+                android:text="@string/contents" />
+            <Spinner
+                android:id="@+id/secondaryContents"
+                android:layout_width="match_parent"
+                android:layout_span="3"
+                android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/feature_nums" />
             <EditText
                 android:id="@+id/feature_nums"

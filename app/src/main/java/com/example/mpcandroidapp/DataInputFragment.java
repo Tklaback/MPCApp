@@ -50,7 +50,7 @@ import java.util.concurrent.Executors;
 public class DataInputFragment extends Fragment {
     Contents contentsOptions;
     private String site, fs, contents, feature_nums, easting, northing, level, depth, mbd, date,
-            excavator, comments;
+            excavator, comments, secondaryContents;
 
     Database db;
 
@@ -87,6 +87,7 @@ public class DataInputFragment extends Fragment {
 
         EditText siteInput = view.findViewById(R.id.site);
         Spinner contentsInput = view.findViewById(R.id.contents);
+        Spinner secondaryContentsInput = view.findViewById(R.id.secondaryContents);
 //        EditText fs = view.findViewById(R.id.);
         EditText featureNumsInput = view.findViewById(R.id.feature_nums);
         EditText eastInput = view.findViewById(R.id.east);
@@ -109,6 +110,7 @@ public class DataInputFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, primaryContents);
         contentsInput.setAdapter(adapter);
 
+
         if (DataCache.getInstance().getCurQRCode() != null){
             QRCode qrCode = DataCache.getInstance().getCurQRCode();
             siteInput.setText(qrCode.getSite());
@@ -124,14 +126,14 @@ public class DataInputFragment extends Fragment {
             excavatorInput.setText(qrCode.getExcavator());
             commentsInput.setText(qrCode.getComments());
 
-            setEqual(siteInput.getText().toString(), qrCode.getContents() ,featureNumsInput.getText().toString()
+            setEqual(siteInput.getText().toString(), qrCode.getContents(), qrCode.getSecondaryContents(), featureNumsInput.getText().toString()
                     ,eastInput.getText().toString(), northInput.getText().toString(), levelInput.getText().toString(), depthInput.getText().toString()
                     , mbdInput.getText().toString(), dateInput.getText().toString(), excavatorInput.getText().toString()
                     ,commentsInput.getText().toString());
 
             submitButton.setEnabled(true);
 
-            submitButton.setEnabled(!site.isEmpty() && contents != null && !feature_nums.isEmpty() &&
+            submitButton.setEnabled(!site.isEmpty() && contents != null && secondaryContents != null && !feature_nums.isEmpty() &&
                     !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
                     !mbd.isEmpty() && !date.isEmpty() && !excavator.isEmpty());
         }
@@ -140,6 +142,22 @@ public class DataInputFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 contents = parent.getItemAtPosition(position).toString();
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, contentsOptions.getItems().get(contents));
+                secondaryContentsInput.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+        secondaryContentsInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                secondaryContents = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -157,13 +175,12 @@ public class DataInputFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                setEqual(siteInput.getText().toString(), (String) contentsInput.getSelectedItem(),
-                        featureNumsInput.getText().toString()
+                setEqual(siteInput.getText().toString(), (String) contentsInput.getSelectedItem(), (String) secondaryContentsInput.getSelectedItem(), featureNumsInput.getText().toString()
                         ,eastInput.getText().toString(), northInput.getText().toString(), levelInput.getText().toString(), depthInput.getText().toString()
                         , mbdInput.getText().toString(), dateInput.getText().toString(), excavatorInput.getText().toString()
                         ,commentsInput.getText().toString());
 
-                submitButton.setEnabled(!site.isEmpty() && contents != null && !feature_nums.isEmpty() &&
+                submitButton.setEnabled(!site.isEmpty() && contents != null && secondaryContents != null && !feature_nums.isEmpty() &&
                         !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
                         !mbd.isEmpty() && !date.isEmpty() && !excavator.isEmpty());
             }
@@ -221,7 +238,7 @@ public class DataInputFragment extends Fragment {
             if (DataCache.getInstance().getCurQRCode() == null){
                 UUID uuid = UUID.randomUUID();
 
-                QRCode qrCode = new QRCode(uuid.toString(), site, null, contents, feature_nums, easting, northing,
+                QRCode qrCode = new QRCode(uuid.toString(), site, null, contents, secondaryContents, feature_nums, easting, northing,
                         level, depth, mbd, date, excavator, comments, DataCache.getInstance().getCurSession().get_id());
 
                 DataCache.getInstance().setCurQRCode(qrCode);
@@ -241,7 +258,7 @@ public class DataInputFragment extends Fragment {
 
                     new Thread(() -> {
                         QRCodeDao qrCodeDao = db.qrCodeDao();
-                        qrCodeDao.updateQRCodeSite(site, contents, feature_nums, easting,
+                        qrCodeDao.updateQRCodeSite(site, contents, secondaryContents, feature_nums, easting,
                                 northing, level, depth, mbd, date, excavator, comments,
                                 DataCache.getInstance().getCurQRCode().get_id());
 

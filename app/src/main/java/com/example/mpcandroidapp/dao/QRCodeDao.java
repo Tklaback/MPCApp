@@ -28,12 +28,14 @@ public interface QRCodeDao {
     void delete(QRCode qrCode);
 
     @Query("UPDATE QRCode SET site = :newSiteValue, " +
-            "contents = :contents,  feature_nums = :featureNums," +
+            "contents = :contents,  secondaryContents = :secondaryContents," +
+            "feature_nums = :featureNums," +
             "easting = :easting, northing = :northing," +
             "level = :level, depth = :depth, " +
             "mbd = :mbd, date = :date," +
             "excavator = :excavator, comments = :comments WHERE _id = :QRCodeID")
     void updateQRCodeSite(String newSiteValue, String contents,
+                          String secondaryContents,
                           String featureNums, String easting,
                           String northing, String level,
                           String depth, String mbd,

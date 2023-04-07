@@ -11,8 +11,29 @@ public class QRCode {
     @PrimaryKey
     private String _id;
 
-    private String site, fs, contents, feature_nums, easting, northing, level, depth, mbd, date,
-            excavator, comments, sessionID;
+    private String site;
+    private String fs;
+    private String contents;
+
+    public String getSecondaryContents() {
+        return secondaryContents;
+    }
+
+    public void setSecondaryContents(String secondaryContents) {
+        this.secondaryContents = secondaryContents;
+    }
+
+    private String secondaryContents;
+    private String feature_nums;
+    private String easting;
+    private String northing;
+    private String level;
+    private String depth;
+    private String mbd;
+    private String date;
+    private String excavator;
+    private String comments;
+    private String sessionID;
 
     public String get_id() {
         return _id;
@@ -22,11 +43,12 @@ public class QRCode {
         return sessionID;
     }
 
-    public QRCode(String _id, String site, String fs, String contents, String feature_nums, String easting, String northing, String level, String depth, String mbd, String date, String excavator, String comments, String sessionID) {
+    public QRCode(String _id, String site, String fs, String contents, String secondaryContents, String feature_nums, String easting, String northing, String level, String depth, String mbd, String date, String excavator, String comments, String sessionID) {
         this._id = _id;
         this.site = site;
         this.fs = fs;
         this.contents = contents;
+        this.secondaryContents = secondaryContents;
         this.feature_nums = feature_nums;
         this.easting = easting;
         this.northing = northing;

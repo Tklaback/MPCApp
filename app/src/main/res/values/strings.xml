@@ -3,6 +3,7 @@
     <string name="site">Site:</string>
     <string name="fs">FS:</string>
     <string name="contents">Contents:</string>
+    <string name="secondaryContents">Secondary Contents:</string>
     <string name="feature_nums">Feature #\'s:</string>
     <string name="east">Easting:</string>
     <string name="north">Northing:</string>
