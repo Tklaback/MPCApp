@@ -20,7 +20,7 @@ import java.util.Map;
 public class Contents {
     private Context context;
 
-    HashMap<String, ArrayList<String>> data = new HashMap<>();
+    private HashMap<String, ArrayList<String>> data = new HashMap<>();
 
     public HashMap<String, ArrayList<String>> getItems(){
         return data;

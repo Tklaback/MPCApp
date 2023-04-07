@@ -32,7 +32,7 @@ import org.json.JSONObject;
 public class PrintFragment extends Fragment {
 
 
-    String displaySite, displayContents, displayFeatureNums, displayEasting, displayNorthing,
+    String displaySite, displayContents, displaySecondaryContents, displayFeatureNums, displayEasting, displayNorthing,
             displayLevel, displayDepth, displayMBD, displayDate, displayExcavator, displayComments;
 
     Bitmap qrCode;
@@ -64,6 +64,7 @@ public class PrintFragment extends Fragment {
             qrImage = view.findViewById(R.id.qrImage);
             TextView siteView = view.findViewById(R.id.displaySite);
             TextView contentView = view.findViewById(R.id.displayContent);
+            TextView secondaryContentView = view.findViewById(R.id.displaySecondaryContent);
             TextView featureNumView = view.findViewById(R.id.displayFeatureNums);
             TextView eastView = view.findViewById(R.id.displayEast);
             TextView northView = view.findViewById(R.id.displayNorth);
@@ -81,6 +82,7 @@ public class PrintFragment extends Fragment {
 
             displaySite = curQR.getSite();
             displayContents = curQR.getContents();
+            displaySecondaryContents = curQR.getSecondaryContents();
             displayFeatureNums = curQR.getFeature_nums();
             displayEasting = curQR.getEasting();
             displayNorthing = curQR.getNorthing();
@@ -91,25 +93,13 @@ public class PrintFragment extends Fragment {
             displayExcavator = curQR.getExcavator();
             displayComments = curQR.getComments();
 
-//                JSONObject jsonObject = new JSONObject(bundle.getString("jsonObject"));
-
-//                displaySite = jsonObject.getString("site");
-//                displayContents = jsonObject.getString("contents");
-//                displayFeatureNums = jsonObject.getString("feature_nums");
-//                displayEasting = jsonObject.getString("easting");
-//                displayNorthing = jsonObject.getString("northing");
-//                displayLevel = jsonObject.getString("level");
-//                displayDepth = jsonObject.getString("depth");
-//                displayMBD = jsonObject.getString("mbd");
-//                displayDate = jsonObject.getString("date");
-//                displayExcavator = jsonObject.getString("excavator");
-//                displayComments = jsonObject.getString("comments");
 
             qrCode = bundle.getParcelable("bitmap");
 
             qrImage.setImageBitmap(qrCode);
             siteView.setText(displaySite);
             contentView.setText(displayContents);
+            secondaryContentView.setText(displaySecondaryContents);
             featureNumView.setText(displayFeatureNums);
             eastView.setText(displayEasting);
             northView.setText(displayNorthing);

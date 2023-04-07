@@ -65,15 +65,16 @@ public class DataInputFragment extends Fragment {
     private void setEqual(String ...strings){
         site = strings[0];
         contents = strings[1];
-        feature_nums = strings[2];
-        easting = strings[3];
-        northing = strings[4];
-        level = strings[5];
-        depth = strings[6];
-        mbd = strings[7];
-        date = strings[8];
-        excavator = strings[9];
-        comments = strings[10];
+        secondaryContents = strings[2];
+        feature_nums = strings[3];
+        easting = strings[4];
+        northing = strings[5];
+        level = strings[6];
+        depth = strings[7];
+        mbd = strings[8];
+        date = strings[9];
+        excavator = strings[10];
+        comments = strings[11];
     }
 
     @Override
@@ -116,6 +117,17 @@ public class DataInputFragment extends Fragment {
             siteInput.setText(qrCode.getSite());
             int pos = primaryContents.indexOf(qrCode.getContents());
             contentsInput.setSelection(pos, true);
+            if (contentsOptions.getItems().get(qrCode.getContents()).size() > 0){
+                if (qrCode.getSecondaryContents() != null){
+                    ArrayList<String> itms = contentsOptions.getItems().get(qrCode.getContents());
+                    ArrayAdapter<String> secondAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, itms);
+                    secondaryContentsInput.setAdapter(secondAdapter);
+
+                    int secondaryPos = itms.indexOf(qrCode.getSecondaryContents());
+                    secondaryContentsInput.setSelection(secondaryPos, true);
+                }
+
+            }
             featureNumsInput.setText(qrCode.getFeature_nums());
             eastInput.setText(qrCode.getEasting());
             northInput.setText(qrCode.getNorthing());
@@ -131,9 +143,8 @@ public class DataInputFragment extends Fragment {
                     , mbdInput.getText().toString(), dateInput.getText().toString(), excavatorInput.getText().toString()
                     ,commentsInput.getText().toString());
 
-            submitButton.setEnabled(true);
 
-            submitButton.setEnabled(!site.isEmpty() && contents != null && secondaryContents != null && !feature_nums.isEmpty() &&
+            submitButton.setEnabled(!site.isEmpty() && contents != null && !feature_nums.isEmpty() &&
                     !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
                     !mbd.isEmpty() && !date.isEmpty() && !excavator.isEmpty());
         }
@@ -143,6 +154,10 @@ public class DataInputFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 contents = parent.getItemAtPosition(position).toString();
 
+                ArrayList<String> itms = contentsOptions.getItems().get(contents);
+                if (itms.size() > 0){
+                    secondaryContents = itms.get(0);
+                }else secondaryContents = null;
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, contentsOptions.getItems().get(contents));
                 secondaryContentsInput.setAdapter(adapter);
 
@@ -180,7 +195,7 @@ public class DataInputFragment extends Fragment {
                         , mbdInput.getText().toString(), dateInput.getText().toString(), excavatorInput.getText().toString()
                         ,commentsInput.getText().toString());
 
-                submitButton.setEnabled(!site.isEmpty() && contents != null && secondaryContents != null && !feature_nums.isEmpty() &&
+                submitButton.setEnabled(!site.isEmpty() && contents != null && !feature_nums.isEmpty() &&
                         !easting.isEmpty() && !northing.isEmpty() && !level.isEmpty() && !depth.isEmpty() &&
                         !mbd.isEmpty() && !date.isEmpty() && !excavator.isEmpty());
             }
@@ -331,38 +346,4 @@ public class DataInputFragment extends Fragment {
         Log.d("json_data", json_data.toString());
         return bitmap;
     }
-//
-//    public class MyAdapter extends ArrayAdapter<MyEnum> {
-//
-//        public MyAdapter (Context context) {
-//            super(context, 0, MyEnum.values());
-//        }
-//
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//            CheckedTextView text= (CheckedTextView) convertView;
-//
-//            if (text== null) {
-//                text = (CheckedTextView) LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_dropdown_item,  parent, false);
-//            }
-//
-//            text.setText(getItem(position).getDescriptionResourceId());
-//
-//            return text;
-//        }
-//
-//        @Override
-//        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-//            CheckedTextView text = (CheckedTextView) convertView;
-//
-//            if (text == null) {
-//                text = (CheckedTextView) LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_dropdown_item,  parent, false);
-//            }
-//
-//            text.setText(getItem(position).getTitle());
-//
-//            return text;
-//        }
-//    }
-
 }
