@@ -2,6 +2,7 @@ package com.example.mpcandroidapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,7 +53,7 @@ public class QRCodeActivity extends AppCompatActivity {
             public void handleMessage(Message message) {
                 RecyclerView recyclerView = findViewById(R.id.recycler_qr_code);
 
-                if (recyclerView != null){
+                if (recyclerView != null) {
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
                     recyclerView.setLayoutManager(layoutManager);
 
@@ -69,6 +70,8 @@ public class QRCodeActivity extends AppCompatActivity {
 
             mHandler.sendMessage(message);
         }).start();
+
+        // TODO: BUILD DIALOG TO ENTER IP AND PORT
 
 
         addQRCodeButton.setOnClickListener(v -> {
@@ -87,8 +90,16 @@ public class QRCodeActivity extends AppCompatActivity {
             finish();
         });
 
-        exportButton.setOnClickListener(v -> sendData());
+        exportButton.setOnClickListener(v -> {
+
+            FragmentManager manager = getSupportFragmentManager();
+
+            ServerDialog dialogFragment = new ServerDialog();
+
+            dialogFragment.show(manager, "NEW SESSION");
+        });
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +154,15 @@ public class QRCodeActivity extends AppCompatActivity {
             finish();
         });
 
-        exportButton.setOnClickListener(v -> sendData());
+        exportButton.setOnClickListener(v -> {
+
+            FragmentManager manager = getSupportFragmentManager();
+
+            ServerDialog dialogFragment = new ServerDialog();
+
+            dialogFragment.show(manager, "NEW SESSION");
+
+        });
     }
 
     public static class QRCodeAdapter extends RecyclerView.Adapter<QRCodeAdapter.ViewHolder> {
@@ -155,7 +174,7 @@ public class QRCodeActivity extends AppCompatActivity {
          * Provide a reference to the type of views that you are using
          * (custom ViewHolder)
          */
-        public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             private final TextView textView;
             private final Context mContext;
             private QRCode curQRCode;
@@ -168,7 +187,7 @@ public class QRCodeActivity extends AppCompatActivity {
                 textView = view.findViewById(R.id.textView);
             }
 
-            private void bind(QRCode qrCode){
+            private void bind(QRCode qrCode) {
                 this.curQRCode = qrCode;
                 getTextView().setText(qrCode.getSite());
             }
@@ -179,7 +198,7 @@ public class QRCodeActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                new Thread(()->{
+                new Thread(() -> {
                     DataCache.getInstance().setCurQRCode(curQRCode);
                     Intent intent = new Intent(mContext, MainActivity.class);
                     mContext.startActivity(intent);
@@ -192,7 +211,7 @@ public class QRCodeActivity extends AppCompatActivity {
          * Initialize the dataset of the Adapter
          *
          * @param dataSet String[] containing the data to populate views to be used
-         * by RecyclerView
+         *                by RecyclerView
          */
         public QRCodeAdapter(List<QRCode> dataSet, Context context) {
             localDataSet = dataSet;
@@ -224,55 +243,5 @@ public class QRCodeActivity extends AppCompatActivity {
         public int getItemCount() {
             return localDataSet.size();
         }
-    }
-
-    private void sendData(){
-        Handler mHandler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message message) {
-                Bundle bundle = message.getData();
-                boolean success = bundle.getBoolean("SUCCESS");
-                if (success)
-                    Toast.makeText(getApplicationContext(), "Data Successfully Sent To Server",
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(), "Error: Failure Connecting to Server",
-                        Toast.LENGTH_SHORT).show();
-            }
-        };
-        new Thread(() -> {
-            Bundle bundle = new Bundle();
-            Message message = Message.obtain();
-            String serverAddress = "192.168.1.13"; // Replace with the IP address or hostname of your server
-            int serverPort = 65432; // Replace with the port number of your server
-            try {
-                Socket socket = new Socket(serverAddress, serverPort);
-
-                Gson gson = new Gson();
-
-                String json = gson.toJson(DataCache.getInstance().getSessionQRCodes());
-
-                OutputStream outputStream = socket.getOutputStream();
-                outputStream.write(json.getBytes());
-
-                InputStream inputStream = socket.getInputStream();
-                byte[] buffer = new byte[1024];
-                int bytesRead = inputStream.read(buffer);
-                String response = new String(buffer, 0, bytesRead);
-                Log.d("RECEIVED DATA", "Received response from server: " + response);
-
-                bundle.putBoolean("SUCCESS", true);
-                message.setData(bundle);
-                mHandler.sendMessage(message);
-
-                socket.close();
-
-            } catch (Exception e) {
-                bundle.putBoolean("SUCCESS", false);
-                message.setData(bundle);
-                mHandler.sendMessage(message);
-            }
-        }).start();
-
     }
 }
