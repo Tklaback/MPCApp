@@ -127,8 +127,8 @@ public class SessionActivity extends AppCompatActivity {
     }
     public static class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHolder> {
 
-        private List<Session> localDataSet;
-        private Context context;
+        private final List<Session> localDataSet;
+        private final Context context;
 
         /**
          * Provide a reference to the type of views that you are using
@@ -137,7 +137,7 @@ public class SessionActivity extends AppCompatActivity {
         private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
             private final TextView textView;
             private Session curSession;
-            private Context mContext;
+            private final Context mContext;
 
             public ViewHolder(View view, Context context) {
                 super(view);
@@ -184,7 +184,6 @@ public class SessionActivity extends AppCompatActivity {
 
         }
 
-        // Create new views (invoked by the layout manager)
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {

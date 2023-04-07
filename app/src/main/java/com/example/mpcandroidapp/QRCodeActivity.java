@@ -170,8 +170,7 @@ public class QRCodeActivity extends AppCompatActivity {
 
             private void bind(QRCode qrCode){
                 this.curQRCode = qrCode;
-                getTextView().setText(qrCode.getSessionID());
-                //For debugging to make sure each qrCode is of same session
+                getTextView().setText(qrCode.getSite());
             }
 
             public TextView getTextView() {
