@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MPCAndroidApp</string>
     <string name="site">Site:</string>
+    <string name="name">Name</string>
     <string name="fs">FS:</string>
     <string name="contents">Contents:</string>
     <string name="secondaryContents">Secondary Contents:</string>

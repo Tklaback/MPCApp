@@ -49,8 +49,6 @@ public class SessionActivity extends AppCompatActivity {
 
         Button addButton = findViewById(R.id.addSession);
 
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-
         SessionDao sessionDao = db.sessionDao();
 
         Handler mHandler = new Handler(Looper.getMainLooper()) {
@@ -76,21 +74,10 @@ public class SessionActivity extends AppCompatActivity {
 
             FragmentManager manager = getSupportFragmentManager();
 
-            DialogFragment dialogFragment = new DialogFragment();
+            SessionDialogFragment dialogFragment = new SessionDialogFragment();
 
             dialogFragment.show(manager, "NEW SESSION");
 
-//            Intent intent = new Intent(this, QRCodeActivity.class);
-//
-//            Session session = new Session(UUID.randomUUID().toString(), java.time.LocalDate.now().toString());
-//
-//            executorService.submit(() -> {
-//                sessionDao.insert(session);
-//                DataCache.getInstance().setCurSession(session);
-//            });
-//            executorService.shutdown();
-//
-//            startActivity(intent);
         });
     }
     @Override
@@ -129,18 +116,12 @@ public class SessionActivity extends AppCompatActivity {
 
 
         addButton.setOnClickListener(v -> {
+            FragmentManager manager = getSupportFragmentManager();
 
-//            Intent intent = new Intent(this, QRCodeActivity.class);
+            SessionDialogFragment dialogFragment = new SessionDialogFragment();
 
-//            Session session = new Session(UUID.randomUUID().toString(), java.time.LocalDate.now().toString());
+            dialogFragment.show(manager, "NEW SESSION");
 
-//            executorService.submit(() -> {
-//                sessionDao.insert(session);
-//                DataCache.getInstance().setCurSession(session);
-//            });
-//            executorService.shutdown();
-//
-//            startActivity(intent);
         });
 
     }
@@ -169,7 +150,7 @@ public class SessionActivity extends AppCompatActivity {
 
             private void bind(Session session){
                 curSession = session;
-                getTextView().setText(session.get_id());
+                getTextView().setText(session.getName());
             }
 
             public TextView getTextView() {
@@ -179,17 +160,12 @@ public class SessionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new Thread(()->{
-                    FragmentManager manager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
 
-                    SessionDialogFragment dialogFragment = new SessionDialogFragment();
-
-                    dialogFragment.show(manager, "NEW SESSION");
-
-//                    DataCache.getInstance().setCurSession(curSession);
-//                    QRCodeDao qrCodeDao = Database.getInstance(mContext).qrCodeDao();
-//                    DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(curSession.get_id()));
-//                    Intent intent = new Intent(mContext, QRCodeActivity.class);
-//                    mContext.startActivity(intent);
+                    DataCache.getInstance().setCurSession(curSession);
+                    QRCodeDao qrCodeDao = Database.getInstance(mContext).qrCodeDao();
+                    DataCache.getInstance().setSessionQRCodes(qrCodeDao.loadAllInSession(curSession.get_id()));
+                    Intent intent = new Intent(mContext, QRCodeActivity.class);
+                    mContext.startActivity(intent);
 
                 }).start();
 
