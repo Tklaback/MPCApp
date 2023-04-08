@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,13 +28,28 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
     private final Context context;
     RecyclerView recyclerView;
 
+    public void deleteItem(int position) {
+        Handler mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                localDataSet.remove(position);
+                recyclerView.removeViewAt(position);
+                notifyItemRemoved(position);
+            }
+        };
+        new Thread(() -> {
+            Database.getInstance(context).sessionDao().delete(localDataSet.get(position));
+
+            mHandler.sendMessage(Message.obtain());
+        }).start();
+    }
+
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder)
      */
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final TextView textView;
-        private final Button deleteButton;
         private Session curSession;
         private final Context mContext;
         private final SessionAdapter adapter;
@@ -46,10 +62,6 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
             view.setOnClickListener(this);
 
             textView = view.findViewById(R.id.textView);
-            deleteButton = view.findViewById(R.id.delete);
-            deleteButton.setOnClickListener(v -> {
-                adapter.removeAt(getAdapterPosition());
-            });
         }
 
         private void bind(Session session){
@@ -102,6 +114,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position){
         viewHolder.bind(localDataSet.get(position));
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -110,21 +123,4 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
         return localDataSet.size();
     }
 
-    public void removeAt(int position) {
-        Handler mHandler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message message) {
-                localDataSet.remove(position);
-
-//                recyclerView.getLayoutManager().requestLayout();
-                notifyItemRemoved(position);
-            }
-        };
-        new Thread(() -> {
-            Database.getInstance(context).sessionDao().delete(localDataSet.get(position));
-
-            mHandler.sendMessage(Message.obtain());
-        }).start();
-
-    }
 }

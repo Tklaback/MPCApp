@@ -3,6 +3,7 @@ package com.example.mpcandroidapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -57,8 +58,12 @@ public class QRCodeActivity extends AppCompatActivity {
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
                     recyclerView.setLayoutManager(layoutManager);
 
-                    QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), QRCodeActivity.this);
+                    QRCodeAdapter adapter = new QRCodeAdapter(recyclerView, DataCache.getInstance().getSessionQRCodes(), QRCodeActivity.this);
                     recyclerView.setAdapter(adapter);
+
+                    QRCodeSwipe swipeHandler = new QRCodeSwipe(adapter);
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
+                    itemTouchHelper.attachToRecyclerView(recyclerView);
                 }
             }
         };
@@ -126,8 +131,12 @@ public class QRCodeActivity extends AppCompatActivity {
                 if (recyclerView != null) {
                     recyclerView.setLayoutManager(layoutManager);
 
-                    QRCodeAdapter adapter = new QRCodeAdapter(DataCache.getInstance().getSessionQRCodes(), QRCodeActivity.this);
+                    QRCodeAdapter adapter = new QRCodeAdapter(recyclerView, DataCache.getInstance().getSessionQRCodes(), QRCodeActivity.this);
                     recyclerView.setAdapter(adapter);
+
+                    QRCodeSwipe swipeHandler = new QRCodeSwipe(adapter);
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
+                    itemTouchHelper.attachToRecyclerView(recyclerView);
                 }
 
             }
@@ -169,6 +178,7 @@ public class QRCodeActivity extends AppCompatActivity {
 
         private final List<QRCode> localDataSet;
         private final Context context;
+        RecyclerView recyclerView;
 
         /**
          * Provide a reference to the type of views that you are using
@@ -179,7 +189,6 @@ public class QRCodeActivity extends AppCompatActivity {
             private final Context mContext;
             private QRCode curQRCode;
             private final QRCodeAdapter adapter;
-            private final Button deleteButton;
 
             public ViewHolder(QRCodeAdapter adapter, View view, Context context) {
                 super(view);
@@ -188,10 +197,6 @@ public class QRCodeActivity extends AppCompatActivity {
                 this.mContext = context;
                 this.adapter = adapter;
                 textView = view.findViewById(R.id.textView);
-                deleteButton = view.findViewById(R.id.delete);
-                deleteButton.setOnClickListener(v -> {
-                    adapter.removeAt(getAdapterPosition());
-                });
             }
 
             private void bind(QRCode qrCode) {
@@ -220,9 +225,10 @@ public class QRCodeActivity extends AppCompatActivity {
          * @param dataSet String[] containing the data to populate views to be used
          *                by RecyclerView
          */
-        public QRCodeAdapter(List<QRCode> dataSet, Context context) {
+        public QRCodeAdapter(RecyclerView recyclerView, List<QRCode> dataSet, Context context) {
             localDataSet = dataSet;
             this.context = context;
+            this.recyclerView = recyclerView;
         }
 
         // Create new views (invoked by the layout manager)
@@ -256,8 +262,7 @@ public class QRCodeActivity extends AppCompatActivity {
                 @Override
                 public void handleMessage(Message message) {
                     localDataSet.remove(position);
-
-//                recyclerView.getLayoutManager().requestLayout();
+                    recyclerView.removeViewAt(position);
                     notifyItemRemoved(position);
                 }
             };
@@ -267,6 +272,26 @@ public class QRCodeActivity extends AppCompatActivity {
                 mHandler.sendMessage(Message.obtain());
             }).start();
 
+        }
+    }
+
+    private class QRCodeSwipe extends ItemTouchHelper.SimpleCallback {
+        private QRCodeAdapter mAdapter;
+
+        public QRCodeSwipe(QRCodeAdapter adapter) {
+            super(0, ItemTouchHelper.RIGHT);
+            mAdapter = adapter;
+        }
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            mAdapter.removeAt(position);
         }
     }
 }

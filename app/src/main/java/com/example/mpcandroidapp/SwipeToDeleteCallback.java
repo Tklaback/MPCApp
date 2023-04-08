@@ -1,5 +1,10 @@
 package com.example.mpcandroidapp;
 
+import android.content.Context;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,9 +25,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        mAdapter.removeAt(position);
-//        mAdapter.notifyItemRemoved(position);
-//        mAdapter.notifyDataSetChanged();
-//        mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+        mAdapter.deleteItem(position);
     }
 }
+

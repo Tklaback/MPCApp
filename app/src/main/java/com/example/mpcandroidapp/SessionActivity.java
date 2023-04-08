@@ -64,9 +64,9 @@ public class SessionActivity extends AppCompatActivity {
                     SessionAdapter adapter = new SessionAdapter(recyclerView, DataCache.getInstance().getAllSessions(), SessionActivity.this);
                     recyclerView.setAdapter(adapter);
 
-//                    SwipeToDeleteCallback swipeHandler = new SwipeToDeleteCallback(adapter);
-//                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
-//                    itemTouchHelper.attachToRecyclerView(recyclerView);
+                    SwipeToDeleteCallback swipeHandler = new SwipeToDeleteCallback(adapter);
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
+                    itemTouchHelper.attachToRecyclerView(recyclerView);
                 }
             }
         };
@@ -109,9 +109,9 @@ public class SessionActivity extends AppCompatActivity {
                     SessionAdapter adapter = new SessionAdapter(recyclerView, DataCache.getInstance().getAllSessions(), SessionActivity.this);
                     recyclerView.setAdapter(adapter);
 
-//                    SwipeToDeleteCallback swipeHandler = new SwipeToDeleteCallback(adapter);
-//                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
-//                    itemTouchHelper.attachToRecyclerView(recyclerView);
+                    SwipeToDeleteCallback swipeHandler = new SwipeToDeleteCallback(adapter);
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
+                    itemTouchHelper.attachToRecyclerView(recyclerView);
                 }
             }
         };
