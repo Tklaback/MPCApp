@@ -24,6 +24,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
 
     private final List<Session> localDataSet;
     private final Context context;
+    RecyclerView recyclerView;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -73,10 +74,10 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView
      */
-    public SessionAdapter(List<Session> dataSet, Context context) {
+    public SessionAdapter(RecyclerView recyclerView, List<Session> dataSet, Context context) {
         this.context = context;
         localDataSet = dataSet;
-
+        this.recyclerView = recyclerView;
     }
 
     @NonNull
@@ -91,8 +92,6 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position){
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
         viewHolder.bind(localDataSet.get(position));
     }
 
@@ -107,8 +106,9 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
             @Override
             public void handleMessage(Message message) {
                 localDataSet.remove(position);
+
+//                recyclerView.getLayoutManager().requestLayout();
                 notifyItemRemoved(position);
-                notifyItemRangeChanged(position, localDataSet.size());
             }
         };
         new Thread(() -> {

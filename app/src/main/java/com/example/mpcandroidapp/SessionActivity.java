@@ -61,7 +61,7 @@ public class SessionActivity extends AppCompatActivity {
                 if (recyclerView != null){
                     recyclerView.setLayoutManager(layoutManager);
 
-                    SessionAdapter adapter = new SessionAdapter(DataCache.getInstance().getAllSessions(), SessionActivity.this);
+                    SessionAdapter adapter = new SessionAdapter(recyclerView, DataCache.getInstance().getAllSessions(), SessionActivity.this);
                     recyclerView.setAdapter(adapter);
 
                     SwipeToDeleteCallback swipeHandler = new SwipeToDeleteCallback(adapter);
@@ -108,7 +108,7 @@ public class SessionActivity extends AppCompatActivity {
                 if (recyclerView != null){
                     recyclerView.setLayoutManager(layoutManager);
 
-                    SessionAdapter adapter = new SessionAdapter(DataCache.getInstance().getAllSessions(), SessionActivity.this);
+                    SessionAdapter adapter = new SessionAdapter(recyclerView, DataCache.getInstance().getAllSessions(), SessionActivity.this);
                     recyclerView.setAdapter(adapter);
 
                     SwipeToDeleteCallback swipeHandler = new SwipeToDeleteCallback(adapter);
