@@ -178,13 +178,20 @@ public class QRCodeActivity extends AppCompatActivity {
             private final TextView textView;
             private final Context mContext;
             private QRCode curQRCode;
+            private final QRCodeAdapter adapter;
+            private final Button deleteButton;
 
-            public ViewHolder(View view, Context context) {
+            public ViewHolder(QRCodeAdapter adapter, View view, Context context) {
                 super(view);
                 // Define click listener for the ViewHolder's View
                 view.setOnClickListener(this);
                 this.mContext = context;
+                this.adapter = adapter;
                 textView = view.findViewById(R.id.textView);
+                deleteButton = view.findViewById(R.id.delete);
+                deleteButton.setOnClickListener(v -> {
+                    adapter.removeAt(getAdapterPosition());
+                });
             }
 
             private void bind(QRCode qrCode) {
@@ -225,7 +232,7 @@ public class QRCodeActivity extends AppCompatActivity {
             // Create a new view, which defines the UI of the list item
             View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.session_layout,
                     viewGroup, false);
-            return new ViewHolder(itemView, context);
+            return new ViewHolder(this, itemView, context);
         }
 
         // Replace the contents of a view (invoked by the layout manager)
@@ -242,6 +249,24 @@ public class QRCodeActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return localDataSet.size();
+        }
+
+        public void removeAt(int position) {
+            Handler mHandler = new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(Message message) {
+                    localDataSet.remove(position);
+
+//                recyclerView.getLayoutManager().requestLayout();
+                    notifyItemRemoved(position);
+                }
+            };
+            new Thread(() -> {
+                Database.getInstance(context).qrCodeDao().delete(localDataSet.get(position));
+
+                mHandler.sendMessage(Message.obtain());
+            }).start();
+
         }
     }
 }
