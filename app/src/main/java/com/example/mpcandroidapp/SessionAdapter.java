@@ -8,6 +8,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,16 +33,23 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
      */
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final TextView textView;
+        private final Button deleteButton;
         private Session curSession;
         private final Context mContext;
+        private final SessionAdapter adapter;
 
-        public ViewHolder(View view, Context context) {
+        public ViewHolder(SessionAdapter adapter, View view, Context context) {
             super(view);
-            // Define click listener for the ViewHolder's View
+
+            this.adapter= adapter;
             this.mContext = context;
             view.setOnClickListener(this);
 
             textView = view.findViewById(R.id.textView);
+            deleteButton = view.findViewById(R.id.delete);
+            deleteButton.setOnClickListener(v -> {
+                adapter.removeAt(getAdapterPosition());
+            });
         }
 
         private void bind(Session session){
@@ -52,6 +60,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
         public TextView getTextView() {
             return textView;
         }
+
 
         @Override
         public void onClick(View v) {
@@ -86,7 +95,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHold
         // Create a new view, which defines the UI of the list item
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.session_layout,
                 viewGroup, false);
-        return new ViewHolder(itemView, context);
+        return new ViewHolder(this, itemView, context);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
