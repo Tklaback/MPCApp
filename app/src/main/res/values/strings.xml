@@ -15,7 +15,7 @@
     <string name="excavator">Excavator:</string>
     <string name="submit">Submit</string>
     <string name="comments">Comments:</string>
-    <string name="print">print</string>
+    <string name="print">print/save</string>
     <string name="sessionPage">Sessions</string>
     <string name="qrPage">QR Codes</string>
     <string name="edit">Edit QR</string>

@@ -201,7 +201,9 @@ public class QRCodeActivity extends AppCompatActivity {
 
             private void bind(QRCode qrCode) {
                 this.curQRCode = qrCode;
-                getTextView().setText(qrCode.getSite());
+                String displayString = qrCode.getSite() + "_" + qrCode.getContents().substring(0, 4)
+                        + "_" + qrCode.getDate();
+                getTextView().setText(displayString);
             }
 
             public TextView getTextView() {
@@ -275,8 +277,8 @@ public class QRCodeActivity extends AppCompatActivity {
         }
     }
 
-    private class QRCodeSwipe extends ItemTouchHelper.SimpleCallback {
-        private QRCodeAdapter mAdapter;
+    private static class QRCodeSwipe extends ItemTouchHelper.SimpleCallback {
+        private final QRCodeAdapter mAdapter;
 
         public QRCodeSwipe(QRCodeAdapter adapter) {
             super(0, ItemTouchHelper.RIGHT);

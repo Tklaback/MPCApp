@@ -66,7 +66,7 @@ public class ServerDialog extends DialogFragment {
                     sendData(ipAddress.getText().toString(), port.getText().toString(), view);
                 })
                 .setNegativeButton("CANCEL", (dialog, which) -> {
-                    Toast.makeText(getActivity(), "CANCEL", Toast.LENGTH_SHORT).show();
+
                 })
                 .create();
     }
